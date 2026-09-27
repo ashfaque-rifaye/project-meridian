@@ -77,10 +77,10 @@
     "isolation": "git archive of each exact commit into a temporary sandbox; python -I subprocess; no environment credentials; no network endpoints configured"
   },
   "latest_run": {
-    "run_id": "run-20260927172957414-f57598c0",
+    "run_id": "run-20260927173312405-f57598c0",
     "result": "FAIL",
     "silent_failure": true,
-    "finished_at": "2026-09-27T17:29:57Z",
-    "evidence_id": "ev-run-20260927172957414-f57598c0"
+    "finished_at": "2026-09-27T17:33:12Z",
+    "evidence_id": "ev-run-20260927173312405-f57598c0"
   }
 }
