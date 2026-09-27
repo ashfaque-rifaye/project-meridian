@@ -1,0 +1,48 @@
+{
+  "adapter": "flyway",
+  "source": "SELECT * FROM LEDGER.\"flyway_schema_history\" @ db2-test-ldg01/LEDGDB",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "_synthetic": true,
+  "database": "LEDGDB",
+  "host": "db2-test-ldg01.dc2.acme.internal",
+  "schema": "LEDGER",
+  "migrations_git_commit": "c3c1c7e",
+  "flyway_schema_history": [
+    {
+      "installed_rank": 13,
+      "version": "13",
+      "description": "ledger indexes",
+      "script": "V13__ledger_indexes.sql",
+      "installed_on": "2026-08-30T02:14:09Z",
+      "success": true,
+      "type": "SQL",
+      "installed_by": "flyway_svc",
+      "execution_time": 471,
+      "checksum": 21086848
+    },
+    {
+      "installed_rank": 14,
+      "version": "14",
+      "description": "ledger transactions",
+      "script": "V14__ledger_transactions.sql",
+      "installed_on": "2026-09-15T09:00:00Z",
+      "success": true,
+      "type": "SQL",
+      "installed_by": "flyway_svc",
+      "execution_time": 478,
+      "checksum": 67179378
+    },
+    {
+      "installed_rank": 15,
+      "version": "15",
+      "description": "widen customer add currency",
+      "script": "V15__widen_customer_add_currency.sql",
+      "installed_on": "2026-09-23T13:20:00Z",
+      "success": true,
+      "type": "SQL",
+      "installed_by": "flyway_svc",
+      "execution_time": 485,
+      "checksum": 113124276
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+.sidebar-nav {
+  width: 200px;
+  flex-shrink: 0;
+  background: #0d1117;
+  border-right: 1px solid #1e2530;
+  padding: 12px 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  text-align: left;
+  width: 100%;
+  transition: all 0.12s;
+}
+
+.nav-item:hover {
+  background: #111318;
+  color: #94a3b8;
+}
+
+.nav-item-active {
+  background: rgba(59, 130, 246, 0.12) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.nav-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

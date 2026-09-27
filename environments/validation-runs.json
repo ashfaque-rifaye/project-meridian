@@ -1,0 +1,608 @@
+{
+  "_synthetic": true,
+  "runs": [
+    {
+      "run_id": "val-stage-r268-e2e-0917",
+      "environment": "stage",
+      "release": "R-26.8",
+      "suite": "stage-e2e-order-to-ledger",
+      "method": "End-to-end business flow with semantic assertions",
+      "pipeline": "Jenkins \u00b7 release-validation #2211",
+      "started_at": "2026-09-17T14:00:00Z",
+      "finished_at": "2026-09-17T14:22:00Z",
+      "messages": 240,
+      "result": "PASS",
+      "fixtures": [
+        "fx-existing-customer-usd"
+      ],
+      "edges": [
+        {
+          "edge_id": "web-checkout--order-api",
+          "producer": "web-checkout",
+          "producer_version": "2.3",
+          "producer_commit": "470f5dd",
+          "consumer": "order-api",
+          "consumer_version": "4.7",
+          "consumer_commit": "1ef03ec",
+          "messages": 240,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "order-api--payment-service",
+          "producer": "order-api",
+          "producer_version": "4.7",
+          "producer_commit": "1ef03ec",
+          "consumer": "payment-service",
+          "consumer_version": "8.3",
+          "consumer_commit": "c7dc383",
+          "messages": 240,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "payment-service--kafka-orders",
+          "producer": "payment-service",
+          "producer_version": "8.3",
+          "producer_commit": "c7dc383",
+          "consumer": "kafka-orders",
+          "consumer_version": "v3",
+          "consumer_commit": "1abe83e",
+          "messages": 240,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "kafka-orders--billing-service",
+          "producer": "kafka-orders",
+          "producer_version": "v3",
+          "producer_commit": "1abe83e",
+          "consumer": "billing-service",
+          "consumer_version": "7.1",
+          "consumer_commit": "773297d",
+          "messages": 240,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "billing-service--mq-bridge",
+          "producer": "billing-service",
+          "producer_version": "7.1",
+          "producer_commit": "773297d",
+          "consumer": "mq-bridge",
+          "consumer_version": "3.0",
+          "consumer_commit": "3dc3da4",
+          "messages": 240,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "mq-bridge--legacy-ledger",
+          "producer": "mq-bridge",
+          "producer_version": "3.0",
+          "producer_commit": "3dc3da4",
+          "consumer": "legacy-ledger",
+          "consumer_version": "6.9",
+          "consumer_commit": "2f9ab73",
+          "messages": 240,
+          "semantic_assertions": 9,
+          "semantic_assertions_passed": 9,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "legacy-ledger--ledger-db",
+          "producer": "legacy-ledger",
+          "producer_version": "6.9",
+          "producer_commit": "2f9ab73",
+          "consumer": "ledger-db",
+          "consumer_version": "V14",
+          "consumer_commit": "855d31b",
+          "messages": 240,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "val-dev-r269-smoke-0922",
+      "environment": "dev",
+      "release": "R-26.9",
+      "suite": "ledger-connectivity-smoke",
+      "method": "Post-deploy smoke test (MQ ACK + posting status only)",
+      "pipeline": "Argo CD PostSync hook \u00b7 mq-bridge",
+      "started_at": "2026-09-22T11:05:00Z",
+      "finished_at": "2026-09-22T11:05:40Z",
+      "messages": 1,
+      "result": "PASS",
+      "fixtures": [
+        "fx-existing-customer-usd"
+      ],
+      "edges": [
+        {
+          "edge_id": "billing-service--mq-bridge",
+          "producer": "billing-service",
+          "producer_version": "7.2",
+          "producer_commit": "a736b1b",
+          "consumer": "mq-bridge",
+          "consumer_version": "3.1",
+          "consumer_commit": "57bb624",
+          "messages": 1,
+          "semantic_assertions": 0,
+          "semantic_assertions_passed": 0,
+          "technical_checks": [
+            "MQ ACK received from LEDGER.IN",
+            "LDGPOST status = POSTED"
+          ]
+        },
+        {
+          "edge_id": "mq-bridge--legacy-ledger",
+          "producer": "mq-bridge",
+          "producer_version": "3.1",
+          "producer_commit": "57bb624",
+          "consumer": "legacy-ledger",
+          "consumer_version": "6.9",
+          "consumer_commit": "2f9ab73",
+          "messages": 1,
+          "semantic_assertions": 0,
+          "semantic_assertions_passed": 0,
+          "technical_checks": [
+            "MQ ACK received from LEDGER.IN",
+            "LDGPOST status = POSTED"
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "val-dev-r269-e2e-0922",
+      "environment": "dev",
+      "release": "R-26.9",
+      "suite": "dev-e2e-order-to-ledger",
+      "method": "End-to-end business flow with semantic assertions",
+      "pipeline": "Jenkins \u00b7 release-validation #2230",
+      "started_at": "2026-09-22T16:30:00Z",
+      "finished_at": "2026-09-22T16:51:00Z",
+      "messages": 180,
+      "result": "PASS",
+      "fixtures": [
+        "fx-new-customer-usd",
+        "fx-existing-customer-eur",
+        "fx-existing-customer-usd"
+      ],
+      "edges": [
+        {
+          "edge_id": "web-checkout--order-api",
+          "producer": "web-checkout",
+          "producer_version": "2.3",
+          "producer_commit": "470f5dd",
+          "consumer": "order-api",
+          "consumer_version": "4.8",
+          "consumer_commit": "e99581b",
+          "messages": 180,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "order-api--payment-service",
+          "producer": "order-api",
+          "producer_version": "4.8",
+          "producer_commit": "e99581b",
+          "consumer": "payment-service",
+          "consumer_version": "8.4",
+          "consumer_commit": "381651e",
+          "messages": 180,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "payment-service--kafka-orders",
+          "producer": "payment-service",
+          "producer_version": "8.4",
+          "producer_commit": "381651e",
+          "consumer": "kafka-orders",
+          "consumer_version": "v4",
+          "consumer_commit": "5a20361",
+          "messages": 180,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "kafka-orders--billing-service",
+          "producer": "kafka-orders",
+          "producer_version": "v4",
+          "producer_commit": "5a20361",
+          "consumer": "billing-service",
+          "consumer_version": "7.2",
+          "consumer_commit": "a736b1b",
+          "messages": 180,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "billing-service--mq-bridge",
+          "producer": "billing-service",
+          "producer_version": "7.2",
+          "producer_commit": "a736b1b",
+          "consumer": "mq-bridge",
+          "consumer_version": "3.1",
+          "consumer_commit": "57bb624",
+          "messages": 180,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "mq-bridge--legacy-ledger",
+          "producer": "mq-bridge",
+          "producer_version": "3.1",
+          "producer_commit": "57bb624",
+          "consumer": "legacy-ledger",
+          "consumer_version": "7.0",
+          "consumer_commit": "8e4a8dd",
+          "messages": 180,
+          "semantic_assertions": 9,
+          "semantic_assertions_passed": 9,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "legacy-ledger--ledger-db",
+          "producer": "legacy-ledger",
+          "producer_version": "7.0",
+          "producer_commit": "8e4a8dd",
+          "consumer": "ledger-db",
+          "consumer_version": "V15",
+          "consumer_commit": "c3c1c7e",
+          "messages": 180,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "val-test-r269-sit-0923",
+      "environment": "test",
+      "release": "R-26.9",
+      "suite": "sit-order-to-ledger",
+      "method": "System integration test with semantic assertions",
+      "pipeline": "Jenkins \u00b7 release-validation #2241",
+      "started_at": "2026-09-23T15:00:00Z",
+      "finished_at": "2026-09-23T15:38:00Z",
+      "messages": 620,
+      "result": "PASS",
+      "fixtures": [
+        "fx-new-customer-usd",
+        "fx-existing-customer-eur",
+        "fx-existing-customer-usd"
+      ],
+      "edges": [
+        {
+          "edge_id": "web-checkout--order-api",
+          "producer": "web-checkout",
+          "producer_version": "2.3",
+          "producer_commit": "470f5dd",
+          "consumer": "order-api",
+          "consumer_version": "4.8",
+          "consumer_commit": "e99581b",
+          "messages": 620,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "order-api--payment-service",
+          "producer": "order-api",
+          "producer_version": "4.8",
+          "producer_commit": "e99581b",
+          "consumer": "payment-service",
+          "consumer_version": "8.4",
+          "consumer_commit": "381651e",
+          "messages": 620,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "payment-service--kafka-orders",
+          "producer": "payment-service",
+          "producer_version": "8.4",
+          "producer_commit": "381651e",
+          "consumer": "kafka-orders",
+          "consumer_version": "v4",
+          "consumer_commit": "5a20361",
+          "messages": 620,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "kafka-orders--billing-service",
+          "producer": "kafka-orders",
+          "producer_version": "v4",
+          "producer_commit": "5a20361",
+          "consumer": "billing-service",
+          "consumer_version": "7.2",
+          "consumer_commit": "a736b1b",
+          "messages": 620,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "billing-service--mq-bridge",
+          "producer": "billing-service",
+          "producer_version": "7.2",
+          "producer_commit": "a736b1b",
+          "consumer": "mq-bridge",
+          "consumer_version": "3.1",
+          "consumer_commit": "57bb624",
+          "messages": 620,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "mq-bridge--legacy-ledger",
+          "producer": "mq-bridge",
+          "producer_version": "3.1",
+          "producer_commit": "57bb624",
+          "consumer": "legacy-ledger",
+          "consumer_version": "7.0",
+          "consumer_commit": "8e4a8dd",
+          "messages": 620,
+          "semantic_assertions": 9,
+          "semantic_assertions_passed": 9,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "legacy-ledger--ledger-db",
+          "producer": "legacy-ledger",
+          "producer_version": "7.0",
+          "producer_commit": "8e4a8dd",
+          "consumer": "ledger-db",
+          "consumer_version": "V15",
+          "consumer_commit": "c3c1c7e",
+          "messages": 620,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        }
+      ]
+    },
+    {
+      "run_id": "val-stage-r269-e2e-0924",
+      "environment": "stage",
+      "release": "R-26.9",
+      "suite": "stage-e2e-order-to-ledger",
+      "method": "End-to-end business flow with semantic assertions",
+      "pipeline": "Jenkins \u00b7 release-validation #2256",
+      "started_at": "2026-09-24T14:30:00Z",
+      "finished_at": "2026-09-24T14:57:00Z",
+      "messages": 1420,
+      "result": "PASS",
+      "fixtures": [
+        "fx-new-customer-usd",
+        "fx-existing-customer-eur",
+        "fx-existing-customer-usd"
+      ],
+      "edges": [
+        {
+          "edge_id": "web-checkout--order-api",
+          "producer": "web-checkout",
+          "producer_version": "2.3",
+          "producer_commit": "470f5dd",
+          "consumer": "order-api",
+          "consumer_version": "4.8",
+          "consumer_commit": "e99581b",
+          "messages": 1420,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "order-api--payment-service",
+          "producer": "order-api",
+          "producer_version": "4.8",
+          "producer_commit": "e99581b",
+          "consumer": "payment-service",
+          "consumer_version": "8.4",
+          "consumer_commit": "381651e",
+          "messages": 1420,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "payment-service--kafka-orders",
+          "producer": "payment-service",
+          "producer_version": "8.4",
+          "producer_commit": "381651e",
+          "consumer": "kafka-orders",
+          "consumer_version": "v4",
+          "consumer_commit": "5a20361",
+          "messages": 1420,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "kafka-orders--billing-service",
+          "producer": "kafka-orders",
+          "producer_version": "v4",
+          "producer_commit": "5a20361",
+          "consumer": "billing-service",
+          "consumer_version": "7.2",
+          "consumer_commit": "a736b1b",
+          "messages": 1420,
+          "semantic_assertions": 4,
+          "semantic_assertions_passed": 4,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "billing-service--mq-bridge",
+          "producer": "billing-service",
+          "producer_version": "7.2",
+          "producer_commit": "a736b1b",
+          "consumer": "mq-bridge",
+          "consumer_version": "3.1",
+          "consumer_commit": "57bb624",
+          "messages": 1420,
+          "semantic_assertions": 5,
+          "semantic_assertions_passed": 5,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "mq-bridge--legacy-ledger",
+          "producer": "mq-bridge",
+          "producer_version": "3.1",
+          "producer_commit": "57bb624",
+          "consumer": "legacy-ledger",
+          "consumer_version": "7.0",
+          "consumer_commit": "8e4a8dd",
+          "messages": 1420,
+          "semantic_assertions": 9,
+          "semantic_assertions_passed": 9,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        },
+        {
+          "edge_id": "legacy-ledger--ledger-db",
+          "producer": "legacy-ledger",
+          "producer_version": "7.0",
+          "producer_commit": "8e4a8dd",
+          "consumer": "ledger-db",
+          "consumer_version": "V15",
+          "consumer_commit": "c3c1c7e",
+          "messages": 1420,
+          "semantic_assertions": 6,
+          "semantic_assertions_passed": 6,
+          "technical_checks": [
+            "transport ACK",
+            "HTTP / consumer status"
+          ]
+        }
+      ]
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "fx-new-customer-usd",
+      "label": "New 12-character customer, USD",
+      "event": {
+        "billingId": "BL-100482",
+        "customerId": "CUST12345678",
+        "currencyCode": "USD",
+        "amount": "149.50"
+      }
+    },
+    {
+      "id": "fx-existing-customer-eur",
+      "label": "Existing 10-character customer, EUR",
+      "event": {
+        "billingId": "BL-100483",
+        "customerId": "CUST000042",
+        "currencyCode": "EUR",
+        "amount": "20.00"
+      }
+    },
+    {
+      "id": "fx-existing-customer-usd",
+      "label": "Existing 10-character customer, USD",
+      "event": {
+        "billingId": "BL-100484",
+        "customerId": "CUST000017",
+        "currencyCode": "USD",
+        "amount": "1250.00"
+      }
+    }
+  ]
+}

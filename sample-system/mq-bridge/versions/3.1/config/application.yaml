@@ -1,0 +1,11 @@
+service:
+  name: mq-bridge
+  version: "3.1"
+mq:
+  queueManager: QM.INTEG.01
+  channel: INTEG.SVRCONN
+  sourceQueue: BILL.OUT
+  targetQueue: LEDGER.IN
+ledger:
+  # R-26.9: LEDGREC v7 requires legacy-ledger >= 7.0 (see release notes)
+  recordLayout: v7

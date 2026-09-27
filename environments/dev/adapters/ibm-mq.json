@@ -1,0 +1,41 @@
+{
+  "adapter": "ibm-mq",
+  "source": "MQ REST API \u00b7 GET /ibmmq/rest/v2/admin/qmgr/*/queue",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "_synthetic": true,
+  "queue_managers": [
+    {
+      "name": "QM.INTEG.01",
+      "host": "mq-dev-dc2-01",
+      "queues": [
+        {
+          "name": "BILL.OUT",
+          "maxdepth": 5000,
+          "defpersistence": "YES"
+        },
+        {
+          "name": "LEDGER.IN",
+          "maxdepth": 5000,
+          "defpersistence": "YES"
+        },
+        {
+          "name": "LEDGER.HOLD",
+          "maxdepth": 2000,
+          "defpersistence": "YES"
+        }
+      ]
+    },
+    {
+      "name": "QM.LEDG.01",
+      "host": "mq-dev-dc2-02",
+      "queues": [
+        {
+          "name": "LEDGER.IN",
+          "maxdepth": 5000,
+          "defpersistence": "YES",
+          "backout_threshold": 5
+        }
+      ]
+    }
+  ]
+}

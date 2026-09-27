@@ -1,0 +1,249 @@
+{
+  "adapter": "kubernetes",
+  "source": "kubectl --context eks-dev-use1 get deployments -A -o json",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "cluster": "eks-dev-use1",
+  "platform": "EKS",
+  "cloud": "AWS",
+  "region": "us-east-1",
+  "_synthetic": true,
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "order-api",
+        "namespace": "orders",
+        "labels": {
+          "app.kubernetes.io/name": "order-api",
+          "app.kubernetes.io/version": "4.8",
+          "app.kubernetes.io/managed-by": "argocd",
+          "app.kubernetes.io/part-of": "order-to-ledger"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "56",
+          "org.opencontainers.image.revision": "e99581b",
+          "org.opencontainers.image.version": "4.8"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-dev"
+            },
+            "containers": [
+              {
+                "name": "order-api",
+                "image": "441122334455.dkr.ecr.us-east-1.amazonaws.com/orders/order-api:4.8@sha256:61a3b7162b490c33fca9292f2f452de0016675419997c9e911058661d98c0423",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.dev.acme.internal:4317"
+                  },
+                  {
+                    "name": "PAYMENT_GRPC_TARGET",
+                    "value": "payment-service.dev.acme.internal:443"
+                  },
+                  {
+                    "name": "DB_POOL_SIZE",
+                    "value": "20"
+                  },
+                  {
+                    "name": "FEATURE_FLAGS",
+                    "value": "fraud-precheck=on"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "updatedReplicas": 1,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-22T09:25:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-22T09:25:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "cart-api",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "cart-api",
+          "app.kubernetes.io/version": "2.19",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "66",
+          "org.opencontainers.image.revision": "06b9aae",
+          "org.opencontainers.image.version": "2.19"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-dev"
+            },
+            "containers": [
+              {
+                "name": "cart-api",
+                "image": "registry.acme.internal/shared/cart-api:2.19@sha256:e6f26414d15baf75b98460d016b972546d38f3c138271591b47bb2fa4e3f8352",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.dev.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "updatedReplicas": 1,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "inventory-api",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "inventory-api",
+          "app.kubernetes.io/version": "6.1",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "56",
+          "org.opencontainers.image.revision": "4d53a22",
+          "org.opencontainers.image.version": "6.1"
+        }
+      },
+      "spec": {
+        "replicas": 1,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-dev"
+            },
+            "containers": [
+              {
+                "name": "inventory-api",
+                "image": "registry.acme.internal/shared/inventory-api:6.1@sha256:090118b4791b359ccdb6aa6fb62ea7c1db4e936d7f0ee7c2b7f0bf5c19ef7f49",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.dev.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 1,
+        "readyReplicas": 1,
+        "availableReplicas": 1,
+        "updatedReplicas": 1,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

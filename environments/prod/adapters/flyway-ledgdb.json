@@ -1,0 +1,36 @@
+{
+  "adapter": "flyway",
+  "source": "SELECT * FROM LEDGER.\"flyway_schema_history\" @ db2-prod-ldg01/LEDGDB",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "_synthetic": true,
+  "database": "LEDGDB",
+  "host": "db2-prod-ldg01.dc2.acme.internal",
+  "schema": "LEDGER",
+  "migrations_git_commit": "855d31b",
+  "flyway_schema_history": [
+    {
+      "installed_rank": 13,
+      "version": "13",
+      "description": "ledger indexes",
+      "script": "V13__ledger_indexes.sql",
+      "installed_on": "2026-08-30T02:14:09Z",
+      "success": true,
+      "type": "SQL",
+      "installed_by": "flyway_svc",
+      "execution_time": 471,
+      "checksum": 21086848
+    },
+    {
+      "installed_rank": 14,
+      "version": "14",
+      "description": "ledger transactions",
+      "script": "V14__ledger_transactions.sql",
+      "installed_on": "2026-09-21T18:10:00Z",
+      "success": true,
+      "type": "SQL",
+      "installed_by": "flyway_svc",
+      "execution_time": 478,
+      "checksum": 67179378
+    }
+  ]
+}

@@ -1,0 +1,596 @@
+{
+  "_synthetic": true,
+  "description": "Deployment history collected from Google Cloud Deploy, Argo CD, Azure DevOps, GitHub Actions and Jenkins/CAB records.",
+  "baseline": {
+    "dev": {
+      "web-checkout": {
+        "version": "2.3",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "470f5dd"
+      },
+      "order-api": {
+        "version": "4.7",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "1ef03ec"
+      },
+      "payment-service": {
+        "version": "8.3",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "c7dc383"
+      },
+      "kafka-orders": {
+        "version": "v3",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "1abe83e"
+      },
+      "billing-service": {
+        "version": "7.1",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "773297d"
+      },
+      "mq-bridge": {
+        "version": "3.0",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "3dc3da4"
+      },
+      "legacy-ledger": {
+        "version": "6.9",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "2f9ab73"
+      },
+      "ledger-db": {
+        "version": "V14",
+        "deployed_at": "2026-09-14T09:00:00Z",
+        "commit": "855d31b"
+      }
+    },
+    "test": {
+      "web-checkout": {
+        "version": "2.3",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "470f5dd"
+      },
+      "order-api": {
+        "version": "4.7",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "1ef03ec"
+      },
+      "payment-service": {
+        "version": "8.3",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "c7dc383"
+      },
+      "kafka-orders": {
+        "version": "v3",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "1abe83e"
+      },
+      "billing-service": {
+        "version": "7.1",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "773297d"
+      },
+      "mq-bridge": {
+        "version": "3.0",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "3dc3da4"
+      },
+      "legacy-ledger": {
+        "version": "6.9",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "2f9ab73"
+      },
+      "ledger-db": {
+        "version": "V14",
+        "deployed_at": "2026-09-15T09:00:00Z",
+        "commit": "855d31b"
+      }
+    },
+    "stage": {
+      "web-checkout": {
+        "version": "2.3",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "470f5dd"
+      },
+      "order-api": {
+        "version": "4.7",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "1ef03ec"
+      },
+      "payment-service": {
+        "version": "8.3",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "c7dc383"
+      },
+      "kafka-orders": {
+        "version": "v3",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "1abe83e"
+      },
+      "billing-service": {
+        "version": "7.1",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "773297d"
+      },
+      "mq-bridge": {
+        "version": "3.0",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "3dc3da4"
+      },
+      "legacy-ledger": {
+        "version": "6.9",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "2f9ab73"
+      },
+      "ledger-db": {
+        "version": "V14",
+        "deployed_at": "2026-09-16T09:00:00Z",
+        "commit": "855d31b"
+      }
+    },
+    "prod": {
+      "web-checkout": {
+        "version": "2.3",
+        "deployed_at": "2026-09-10T08:04:00Z",
+        "commit": "470f5dd"
+      },
+      "order-api": {
+        "version": "4.7",
+        "deployed_at": "2026-09-14T06:31:00Z",
+        "commit": "1ef03ec"
+      },
+      "payment-service": {
+        "version": "8.3",
+        "deployed_at": "2026-09-14T06:12:00Z",
+        "commit": "c7dc383"
+      },
+      "kafka-orders": {
+        "version": "v3",
+        "deployed_at": "2026-09-14T06:00:00Z",
+        "commit": "1abe83e"
+      },
+      "billing-service": {
+        "version": "7.1",
+        "deployed_at": "2026-09-14T07:33:00Z",
+        "commit": "773297d"
+      },
+      "mq-bridge": {
+        "version": "3.0",
+        "deployed_at": "2026-09-14T11:02:00Z",
+        "commit": "3dc3da4"
+      },
+      "legacy-ledger": {
+        "version": "6.9",
+        "deployed_at": "2026-09-21T18:03:00Z",
+        "commit": "2f9ab73"
+      },
+      "ledger-db": {
+        "version": "V14",
+        "deployed_at": "2026-09-21T18:10:00Z",
+        "commit": "855d31b"
+      }
+    }
+  },
+  "events": [
+    {
+      "event_id": "dep-prod-legacy-ledger-6_9",
+      "environment": "prod",
+      "component": "legacy-ledger",
+      "from_version": "6.8",
+      "to_version": "6.9",
+      "commit": "2f9ab73",
+      "deployed_at": "2026-09-21T18:03:00Z",
+      "tool": "Jenkins + CAB",
+      "trigger": "change",
+      "actor": "jenkins-ledger-deploy",
+      "run": "change-prod-1820",
+      "status": "SUCCEEDED",
+      "note": "CR-4402 \u00b7 R-26.8 CAB window"
+    },
+    {
+      "event_id": "dep-prod-ledger-db-V14",
+      "environment": "prod",
+      "component": "ledger-db",
+      "from_version": "V13",
+      "to_version": "V14",
+      "commit": "855d31b",
+      "deployed_at": "2026-09-21T18:10:00Z",
+      "tool": "Flyway via Jenkins",
+      "trigger": "change",
+      "actor": "flyway_svc",
+      "run": "change-prod-1816",
+      "status": "SUCCEEDED",
+      "note": "CR-4402 \u00b7 R-26.8 CAB window"
+    },
+    {
+      "event_id": "dep-dev-kafka-orders-v4",
+      "environment": "dev",
+      "component": "kafka-orders",
+      "from_version": "v3",
+      "to_version": "v4",
+      "commit": "5a20361",
+      "deployed_at": "2026-09-22T09:10:00Z",
+      "tool": "GitHub Actions",
+      "trigger": "workflow",
+      "actor": "schema-registry-promote",
+      "run": "workflow-dev-1819",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-payment-service-8_4",
+      "environment": "dev",
+      "component": "payment-service",
+      "from_version": "8.3",
+      "to_version": "8.4",
+      "commit": "381651e",
+      "deployed_at": "2026-09-22T09:20:00Z",
+      "tool": "Azure DevOps",
+      "trigger": "pipeline",
+      "actor": "svc-payments-release",
+      "run": "pipeline-dev-1822",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-order-api-4_8",
+      "environment": "dev",
+      "component": "order-api",
+      "from_version": "4.7",
+      "to_version": "4.8",
+      "commit": "e99581b",
+      "deployed_at": "2026-09-22T09:25:00Z",
+      "tool": "Argo CD (EKS)",
+      "trigger": "sync",
+      "actor": "argocd-application-controller",
+      "run": "sync-dev-1816",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-billing-service-7_2",
+      "environment": "dev",
+      "component": "billing-service",
+      "from_version": "7.1",
+      "to_version": "7.2",
+      "commit": "a736b1b",
+      "deployed_at": "2026-09-22T09:40:00Z",
+      "tool": "Google Cloud Deploy",
+      "trigger": "rollout",
+      "actor": "clouddeploy-sa@acme-storefront.iam",
+      "run": "rollout-dev-1822",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-mq-bridge-3_1",
+      "environment": "dev",
+      "component": "mq-bridge",
+      "from_version": "3.0",
+      "to_version": "3.1",
+      "commit": "57bb624",
+      "deployed_at": "2026-09-22T10:15:00Z",
+      "tool": "Argo CD (OpenShift GitOps)",
+      "trigger": "auto-sync",
+      "actor": "openshift-gitops-application-controller",
+      "run": "auto-sync-dev-1816",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-ledger-db-V15",
+      "environment": "dev",
+      "component": "ledger-db",
+      "from_version": "V14",
+      "to_version": "V15",
+      "commit": "c3c1c7e",
+      "deployed_at": "2026-09-22T15:35:00Z",
+      "tool": "Flyway via Jenkins",
+      "trigger": "change",
+      "actor": "flyway_svc",
+      "run": "change-dev-1823",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-dev-legacy-ledger-7_0",
+      "environment": "dev",
+      "component": "legacy-ledger",
+      "from_version": "6.9",
+      "to_version": "7.0",
+      "commit": "8e4a8dd",
+      "deployed_at": "2026-09-22T15:40:00Z",
+      "tool": "Jenkins + CAB",
+      "trigger": "change",
+      "actor": "jenkins-ledger-deploy",
+      "run": "change-dev-1827",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-kafka-orders-v4",
+      "environment": "test",
+      "component": "kafka-orders",
+      "from_version": "v3",
+      "to_version": "v4",
+      "commit": "5a20361",
+      "deployed_at": "2026-09-23T08:30:00Z",
+      "tool": "GitHub Actions",
+      "trigger": "workflow",
+      "actor": "schema-registry-promote",
+      "run": "workflow-test-1826",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-payment-service-8_4",
+      "environment": "test",
+      "component": "payment-service",
+      "from_version": "8.3",
+      "to_version": "8.4",
+      "commit": "381651e",
+      "deployed_at": "2026-09-23T08:40:00Z",
+      "tool": "Azure DevOps",
+      "trigger": "pipeline",
+      "actor": "svc-payments-release",
+      "run": "pipeline-test-1829",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-order-api-4_8",
+      "environment": "test",
+      "component": "order-api",
+      "from_version": "4.7",
+      "to_version": "4.8",
+      "commit": "e99581b",
+      "deployed_at": "2026-09-23T08:45:00Z",
+      "tool": "Argo CD (EKS)",
+      "trigger": "sync",
+      "actor": "argocd-application-controller",
+      "run": "sync-test-1823",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-billing-service-7_2",
+      "environment": "test",
+      "component": "billing-service",
+      "from_version": "7.1",
+      "to_version": "7.2",
+      "commit": "a736b1b",
+      "deployed_at": "2026-09-23T08:55:00Z",
+      "tool": "Google Cloud Deploy",
+      "trigger": "rollout",
+      "actor": "clouddeploy-sa@acme-storefront.iam",
+      "run": "rollout-test-1829",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-mq-bridge-3_1",
+      "environment": "test",
+      "component": "mq-bridge",
+      "from_version": "3.0",
+      "to_version": "3.1",
+      "commit": "57bb624",
+      "deployed_at": "2026-09-23T09:00:00Z",
+      "tool": "Argo CD (OpenShift GitOps)",
+      "trigger": "auto-sync",
+      "actor": "openshift-gitops-application-controller",
+      "run": "auto-sync-test-1823",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-ledger-db-V15",
+      "environment": "test",
+      "component": "ledger-db",
+      "from_version": "V14",
+      "to_version": "V15",
+      "commit": "c3c1c7e",
+      "deployed_at": "2026-09-23T13:20:00Z",
+      "tool": "Flyway via Jenkins",
+      "trigger": "change",
+      "actor": "flyway_svc",
+      "run": "change-test-1830",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-test-legacy-ledger-7_0",
+      "environment": "test",
+      "component": "legacy-ledger",
+      "from_version": "6.9",
+      "to_version": "7.0",
+      "commit": "8e4a8dd",
+      "deployed_at": "2026-09-23T13:30:00Z",
+      "tool": "Jenkins + CAB",
+      "trigger": "change",
+      "actor": "jenkins-ledger-deploy",
+      "run": "change-test-1834",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-stage-ledger-db-V15",
+      "environment": "stage",
+      "component": "ledger-db",
+      "from_version": "V14",
+      "to_version": "V15",
+      "commit": "c3c1c7e",
+      "deployed_at": "2026-09-24T09:00:00Z",
+      "tool": "Flyway via Jenkins",
+      "trigger": "change",
+      "actor": "flyway_svc",
+      "run": "change-stage-1837",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 1"
+    },
+    {
+      "event_id": "dep-stage-legacy-ledger-7_0",
+      "environment": "stage",
+      "component": "legacy-ledger",
+      "from_version": "6.9",
+      "to_version": "7.0",
+      "commit": "8e4a8dd",
+      "deployed_at": "2026-09-24T09:30:00Z",
+      "tool": "Jenkins + CAB",
+      "trigger": "change",
+      "actor": "jenkins-ledger-deploy",
+      "run": "change-stage-1841",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 2"
+    },
+    {
+      "event_id": "dep-stage-mq-bridge-3_1",
+      "environment": "stage",
+      "component": "mq-bridge",
+      "from_version": "3.0",
+      "to_version": "3.1",
+      "commit": "57bb624",
+      "deployed_at": "2026-09-24T10:00:00Z",
+      "tool": "Argo CD (OpenShift GitOps)",
+      "trigger": "auto-sync",
+      "actor": "openshift-gitops-application-controller",
+      "run": "auto-sync-stage-1830",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 7 (run early, ledger already on 7.0)"
+    },
+    {
+      "event_id": "dep-stage-kafka-orders-v4",
+      "environment": "stage",
+      "component": "kafka-orders",
+      "from_version": "v3",
+      "to_version": "v4",
+      "commit": "5a20361",
+      "deployed_at": "2026-09-24T10:20:00Z",
+      "tool": "GitHub Actions",
+      "trigger": "workflow",
+      "actor": "schema-registry-promote",
+      "run": "workflow-stage-1833",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 3"
+    },
+    {
+      "event_id": "dep-stage-payment-service-8_4",
+      "environment": "stage",
+      "component": "payment-service",
+      "from_version": "8.3",
+      "to_version": "8.4",
+      "commit": "381651e",
+      "deployed_at": "2026-09-24T10:30:00Z",
+      "tool": "Azure DevOps",
+      "trigger": "pipeline",
+      "actor": "svc-payments-release",
+      "run": "pipeline-stage-1836",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 4"
+    },
+    {
+      "event_id": "dep-stage-order-api-4_8",
+      "environment": "stage",
+      "component": "order-api",
+      "from_version": "4.7",
+      "to_version": "4.8",
+      "commit": "e99581b",
+      "deployed_at": "2026-09-24T10:35:00Z",
+      "tool": "Argo CD (EKS)",
+      "trigger": "sync",
+      "actor": "argocd-application-controller",
+      "run": "sync-stage-1830",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 5"
+    },
+    {
+      "event_id": "dep-stage-billing-service-7_2",
+      "environment": "stage",
+      "component": "billing-service",
+      "from_version": "7.1",
+      "to_version": "7.2",
+      "commit": "a736b1b",
+      "deployed_at": "2026-09-24T10:45:00Z",
+      "tool": "Google Cloud Deploy",
+      "trigger": "rollout",
+      "actor": "clouddeploy-sa@acme-storefront.iam",
+      "run": "rollout-stage-1836",
+      "status": "SUCCEEDED",
+      "note": "Runbook step 6"
+    },
+    {
+      "event_id": "dep-prod-kafka-orders-v4",
+      "environment": "prod",
+      "component": "kafka-orders",
+      "from_version": "v3",
+      "to_version": "v4",
+      "commit": "5a20361",
+      "deployed_at": "2026-09-25T06:00:00Z",
+      "tool": "GitHub Actions",
+      "trigger": "workflow",
+      "actor": "schema-registry-promote",
+      "run": "workflow-prod-1840",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-prod-payment-service-8_4",
+      "environment": "prod",
+      "component": "payment-service",
+      "from_version": "8.3",
+      "to_version": "8.4",
+      "commit": "381651e",
+      "deployed_at": "2026-09-25T06:10:00Z",
+      "tool": "Azure DevOps",
+      "trigger": "pipeline",
+      "actor": "svc-payments-release",
+      "run": "pipeline-prod-1843",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-prod-order-api-4_8",
+      "environment": "prod",
+      "component": "order-api",
+      "from_version": "4.7",
+      "to_version": "4.8",
+      "commit": "e99581b",
+      "deployed_at": "2026-09-25T06:30:00Z",
+      "tool": "Argo CD (EKS)",
+      "trigger": "sync",
+      "actor": "argocd-application-controller",
+      "run": "sync-prod-1837",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-prod-billing-service-7_2",
+      "environment": "prod",
+      "component": "billing-service",
+      "from_version": "7.1",
+      "to_version": "7.2",
+      "commit": "a736b1b",
+      "deployed_at": "2026-09-25T07:30:00Z",
+      "tool": "Google Cloud Deploy",
+      "trigger": "rollout",
+      "actor": "clouddeploy-sa@acme-storefront.iam",
+      "run": "rollout-prod-1843",
+      "status": "SUCCEEDED",
+      "note": null
+    },
+    {
+      "event_id": "dep-prod-mq-bridge-3_1",
+      "environment": "prod",
+      "component": "mq-bridge",
+      "from_version": "3.0",
+      "to_version": "3.1",
+      "commit": "57bb624",
+      "deployed_at": "2026-09-25T11:42:00Z",
+      "tool": "Argo CD (OpenShift GitOps)",
+      "trigger": "auto-sync",
+      "actor": "openshift-gitops-application-controller",
+      "run": "auto-sync-prod-1837",
+      "status": "SUCCEEDED",
+      "note": "Argo CD auto-sync after PR #1882 merged release/R-26.9 into env/prod"
+    }
+  ]
+}

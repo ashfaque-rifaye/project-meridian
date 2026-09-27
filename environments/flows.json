@@ -1,0 +1,239 @@
+{
+  "_synthetic": true,
+  "organization": "Acme Retail Group (fictional)",
+  "snapshot_time": "2026-09-25T16:20:00Z",
+  "environments": [
+    "dev",
+    "test",
+    "stage",
+    "prod"
+  ],
+  "promotion_path": [
+    "dev",
+    "test",
+    "stage",
+    "prod"
+  ],
+  "flows": [
+    {
+      "id": "order-to-ledger",
+      "name": "Order-to-Ledger",
+      "description": "A customer checkout becomes an order, a payment, a settled-order event, a billing event, a fixed-width ledger record, and finally a posted row in the Db2 ledger.",
+      "components": [
+        {
+          "id": "web-checkout",
+          "label": "web-checkout",
+          "kind": "service",
+          "platform": "GKE",
+          "cloud": "Google Cloud",
+          "location": "us-east4",
+          "runtime": "Kubernetes Deployment",
+          "team": "Digital Storefront",
+          "deploy_tool": "Google Cloud Deploy",
+          "adapter": "kubernetes",
+          "cluster": "gke-{env}-use4",
+          "namespace": "checkout",
+          "registry": "us-east4-docker.pkg.dev/acme-storefront/apps"
+        },
+        {
+          "id": "order-api",
+          "label": "order-api",
+          "kind": "service",
+          "platform": "EKS",
+          "cloud": "AWS",
+          "location": "us-east-1",
+          "runtime": "Kubernetes Deployment",
+          "team": "Order Platform",
+          "deploy_tool": "GitHub Actions + Argo CD",
+          "adapter": "kubernetes",
+          "cluster": "eks-{env}-use1",
+          "namespace": "orders",
+          "registry": "441122334455.dkr.ecr.us-east-1.amazonaws.com/orders"
+        },
+        {
+          "id": "payment-service",
+          "label": "payment-service",
+          "kind": "service",
+          "platform": "AKS",
+          "cloud": "Azure",
+          "location": "eastus2",
+          "runtime": "Kubernetes Deployment",
+          "team": "Payments",
+          "deploy_tool": "Azure DevOps",
+          "adapter": "kubernetes",
+          "cluster": "aks-{env}-eus2",
+          "namespace": "payments",
+          "registry": "acmepayments.azurecr.io/payments"
+        },
+        {
+          "id": "kafka-orders",
+          "label": "kafka \u00b7 orders.v1",
+          "kind": "stream",
+          "platform": "Kafka",
+          "cloud": "Confluent Cloud",
+          "location": "aws us-east-1",
+          "runtime": "Topic orders.v1 \u00b7 subject orders-value",
+          "team": "Streaming Platform",
+          "deploy_tool": "GitHub Actions (schema pipeline)",
+          "adapter": "schema-registry",
+          "cluster": "lkc-{env}-orders",
+          "namespace": "orders.v1"
+        },
+        {
+          "id": "billing-service",
+          "label": "billing-service",
+          "kind": "service",
+          "platform": "GKE",
+          "cloud": "Google Cloud",
+          "location": "us-east4",
+          "runtime": "Kubernetes Deployment",
+          "team": "Billing",
+          "deploy_tool": "Google Cloud Deploy",
+          "adapter": "kubernetes",
+          "cluster": "gke-{env}-use4",
+          "namespace": "billing",
+          "registry": "us-east4-docker.pkg.dev/acme-storefront/apps"
+        },
+        {
+          "id": "mq-bridge",
+          "label": "mq-bridge",
+          "kind": "integration",
+          "platform": "OpenShift",
+          "cloud": "On-prem \u00b7 DC2",
+          "location": "Dallas DC2",
+          "runtime": "OpenShift Deployment",
+          "team": "Integration Services",
+          "deploy_tool": "Argo CD (OpenShift GitOps)",
+          "adapter": "kubernetes",
+          "cluster": "ocp-{env}-dc2",
+          "namespace": "integration",
+          "registry": "quay.dc2.acme.internal/integration"
+        },
+        {
+          "id": "legacy-ledger",
+          "label": "legacy-ledger",
+          "kind": "legacy",
+          "platform": "WebSphere Liberty",
+          "cloud": "On-prem \u00b7 VMware",
+          "location": "Dallas DC2",
+          "runtime": "Liberty app LDGPOST on VM",
+          "team": "Core Ledger",
+          "deploy_tool": "Jenkins + CAB change window",
+          "adapter": "websphere-liberty",
+          "cluster": "was-{env}-ldg-03",
+          "namespace": "ldgpost"
+        },
+        {
+          "id": "ledger-db",
+          "label": "ledger-db",
+          "kind": "database",
+          "platform": "Db2 LUW",
+          "cloud": "On-prem",
+          "location": "Dallas DC2",
+          "runtime": "Database LEDGDB \u00b7 schema LEDGER",
+          "team": "Core Ledger DBA",
+          "deploy_tool": "Flyway via Jenkins + CAB",
+          "adapter": "flyway",
+          "cluster": "db2-{env}-ldg01",
+          "namespace": "LEDGER"
+        }
+      ],
+      "edges": [
+        {
+          "id": "web-checkout--order-api",
+          "order": 1,
+          "producer": "web-checkout",
+          "consumer": "order-api",
+          "interface": "REST \u00b7 POST /v2/orders",
+          "protocol": "HTTPS / JSON",
+          "contract": {
+            "kind": "OpenAPI",
+            "ref": "orders-api v2",
+            "formal": true
+          }
+        },
+        {
+          "id": "order-api--payment-service",
+          "order": 2,
+          "producer": "order-api",
+          "consumer": "payment-service",
+          "interface": "gRPC \u00b7 PaymentAuthorize",
+          "protocol": "gRPC / Protobuf",
+          "contract": {
+            "kind": "Protobuf",
+            "ref": "payments.v1.PaymentAuthorize",
+            "formal": true
+          }
+        },
+        {
+          "id": "payment-service--kafka-orders",
+          "order": 3,
+          "producer": "payment-service",
+          "consumer": "kafka-orders",
+          "interface": "Kafka produce \u00b7 orders.v1",
+          "protocol": "Kafka / Avro",
+          "contract": {
+            "kind": "Avro \u00b7 Schema Registry",
+            "ref": "orders-value (BACKWARD)",
+            "formal": true
+          }
+        },
+        {
+          "id": "kafka-orders--billing-service",
+          "order": 4,
+          "producer": "kafka-orders",
+          "consumer": "billing-service",
+          "interface": "Kafka consume \u00b7 orders.v1 (group billing-svc)",
+          "protocol": "Kafka / Avro",
+          "contract": {
+            "kind": "Avro \u00b7 Schema Registry",
+            "ref": "orders-value (BACKWARD)",
+            "formal": true
+          }
+        },
+        {
+          "id": "billing-service--mq-bridge",
+          "order": 5,
+          "producer": "billing-service",
+          "consumer": "mq-bridge",
+          "interface": "IBM MQ \u00b7 BILL.OUT",
+          "protocol": "IBM MQ / JSON",
+          "contract": {
+            "kind": "Sample payloads only",
+            "ref": "wiki: BILL.OUT examples",
+            "formal": false
+          }
+        },
+        {
+          "id": "mq-bridge--legacy-ledger",
+          "order": 6,
+          "producer": "mq-bridge",
+          "consumer": "legacy-ledger",
+          "interface": "IBM MQ \u00b7 LEDGER.IN",
+          "protocol": "IBM MQ / fixed-width LEDGREC",
+          "contract": {
+            "kind": "None \u2014 implicit in copybook + ICD spreadsheet",
+            "ref": "LEDGREC.cpy \u00b7 LEDG-ICD-007",
+            "formal": false
+          },
+          "probe_type": "fixed-width-record",
+          "producer_entrypoint": "src/ledger_record.py:to_ledger_record",
+          "consumer_entrypoint": "src/ldgpost.py:post"
+        },
+        {
+          "id": "legacy-ledger--ledger-db",
+          "order": 7,
+          "producer": "legacy-ledger",
+          "consumer": "ledger-db",
+          "interface": "JDBC \u00b7 LEDGER.TRANSACTIONS",
+          "protocol": "Db2 / SQL",
+          "contract": {
+            "kind": "Flyway migrations (DDL)",
+            "ref": "V14 / V15",
+            "formal": true
+          }
+        }
+      ]
+    }
+  ]
+}

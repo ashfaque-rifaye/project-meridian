@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+apps/web/dist/
+
+# Runtime data
+.meridian/runs/
+.meridian/sandbox/
+.meridian/investigations/
+.meridian/repos/
+.meridian/rehearsals/
+.meridian/handoff/
+.meridian/agent-findings/
+.meridian/contracts/
+.meridian/candidates/
+.meridian/worktrees/
+.meridian/bob-activity.jsonl
+.meridian/benchmark.json
+
+# Old lockstep runtime dir
+.lockstep/
+
+# Claude/IDE internal
+.claude/
+
+# Misc
+*.db
+*.sqlite
+*.sqlite3
+.env
+.DS_Store
+Thumbs.db
+*.tmp
+meridian_probe_*.py
+lockstep_probe_*.py
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# Test cache
+.pytest_cache/

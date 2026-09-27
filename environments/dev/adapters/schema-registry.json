@@ -1,0 +1,24 @@
+{
+  "adapter": "schema-registry",
+  "source": "GET https://psrc-dev-orders.acme.internal/subjects/orders-value/versions/latest",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "_synthetic": true,
+  "cluster": "lkc-dev-orders",
+  "platform": "Kafka",
+  "cloud": "Confluent Cloud",
+  "subjects": [
+    {
+      "subject": "orders-value",
+      "topic": "orders.v1",
+      "version": 4,
+      "id": 100204,
+      "compatibility": "BACKWARD",
+      "registered_at": "2026-09-22T09:10:00Z",
+      "schema_git_commit": "5a20361"
+    }
+  ],
+  "config": {
+    "retention.ms": "259200000",
+    "partitions": 6
+  }
+}

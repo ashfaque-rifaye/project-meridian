@@ -1,0 +1,249 @@
+{
+  "adapter": "kubernetes",
+  "source": "kubectl --context ocp-test-dc2 get deployments -A -o json",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "cluster": "ocp-test-dc2",
+  "platform": "OpenShift",
+  "cloud": "On-prem \u00b7 DC2",
+  "region": "Dallas DC2",
+  "_synthetic": true,
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "mq-bridge",
+        "namespace": "integration",
+        "labels": {
+          "app.kubernetes.io/name": "mq-bridge",
+          "app.kubernetes.io/version": "3.1",
+          "app.kubernetes.io/managed-by": "argocd",
+          "app.kubernetes.io/part-of": "order-to-ledger"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "69",
+          "org.opencontainers.image.revision": "57bb624",
+          "org.opencontainers.image.version": "3.1"
+        }
+      },
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-test"
+            },
+            "containers": [
+              {
+                "name": "mq-bridge",
+                "image": "quay.dc2.acme.internal/integration/mq-bridge:3.1@sha256:6ae02d5d442d4975f625f7293f4362ff14bfa0367e70b1ace377d78065776b49",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.test.acme.internal:4317"
+                  },
+                  {
+                    "name": "MQ_QMGR",
+                    "value": "QM.INTEG.01"
+                  },
+                  {
+                    "name": "MQ_CONN",
+                    "value": "mq-test-dc2-01(1414)"
+                  },
+                  {
+                    "name": "LEDGER_RECORD_LAYOUT",
+                    "value": "v7"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 2,
+        "readyReplicas": 2,
+        "availableReplicas": 2,
+        "updatedReplicas": 2,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-23T09:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-23T09:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "edi-gateway",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "edi-gateway",
+          "app.kubernetes.io/version": "4.2",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "57",
+          "org.opencontainers.image.revision": "a9e8e83",
+          "org.opencontainers.image.version": "4.2"
+        }
+      },
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-test"
+            },
+            "containers": [
+              {
+                "name": "edi-gateway",
+                "image": "registry.acme.internal/shared/edi-gateway:4.2@sha256:8228e7753bb82d44db3cb620ef204e87b1603b339a0d0e715e0556f766c2069a",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.test.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 2,
+        "readyReplicas": 2,
+        "availableReplicas": 2,
+        "updatedReplicas": 2,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "file-transfer",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "file-transfer",
+          "app.kubernetes.io/version": "1.8",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "66",
+          "org.opencontainers.image.revision": "a173332",
+          "org.opencontainers.image.version": "1.8"
+        }
+      },
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-test"
+            },
+            "containers": [
+              {
+                "name": "file-transfer",
+                "image": "registry.acme.internal/shared/file-transfer:1.8@sha256:1a3556ba519d3cd6a479b4c7651f70657a7956f5120c24819e9baafa37ed611d",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.test.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 2,
+        "readyReplicas": 2,
+        "availableReplicas": 2,
+        "updatedReplicas": 2,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

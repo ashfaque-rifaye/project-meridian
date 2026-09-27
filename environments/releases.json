@@ -1,0 +1,55 @@
+{
+  "_synthetic": true,
+  "releases": [
+    {
+      "id": "R-26.9",
+      "title": "Customer ID expansion and currency code support",
+      "requirement": "Increase customerId capacity from 10 to 12 characters and introduce mandatory currencyCode support for ledger transactions.",
+      "tickets": [
+        "LEDG-2231",
+        "LEDG-2232",
+        "LEDG-2233",
+        "LEDG-2240",
+        "LEDG-2241",
+        "LEDG-2242"
+      ],
+      "baseline_release": "R-26.8",
+      "target": {
+        "web-checkout": "2.3",
+        "order-api": "4.8",
+        "payment-service": "8.4",
+        "kafka-orders": "v4",
+        "billing-service": "7.2",
+        "mq-bridge": "3.1",
+        "legacy-ledger": "7.0",
+        "ledger-db": "V15"
+      },
+      "baseline": {
+        "web-checkout": "2.3",
+        "order-api": "4.7",
+        "payment-service": "8.3",
+        "kafka-orders": "v3",
+        "billing-service": "7.1",
+        "mq-bridge": "3.0",
+        "legacy-ledger": "6.9",
+        "ledger-db": "V14"
+      },
+      "rollout_order": [
+        "ledger-db V15",
+        "legacy-ledger 7.0",
+        "kafka-orders v4",
+        "payment-service 8.4",
+        "order-api 4.8",
+        "billing-service 7.2",
+        "mq-bridge 3.1"
+      ],
+      "dependencies": [
+        "mq-bridge 3.1 emits LEDGREC rev 7 (25 bytes) and requires legacy-ledger >= 7.0 on LEDGER.IN.",
+        "legacy-ledger 7.0 accepts LEDGREC rev 6 and rev 7, so it must be deployed before mq-bridge 3.1.",
+        "legacy-ledger 7.0 requires ledger-db V15 (CUSTOMER_ID VARCHAR(12), CURRENCY_CODE).",
+        "payment-service 8.4 publishes orders-value v4; billing-service 7.2 must consume v4."
+      ],
+      "change_request": "CR-4471"
+    }
+  ]
+}

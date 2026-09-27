@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "meridian": {
+      "command": "python",
+      "args": ["${workspaceFolder}/mcp-server/meridian_mcp.py"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "alwaysAllow": [
+        "get_release_intent",
+        "get_environment_snapshot",
+        "get_environment_history",
+        "get_component_versions",
+        "get_business_flow",
+        "get_dependency_edges",
+        "get_validation_history",
+        "get_untested_edges",
+        "get_drift_relevance",
+        "get_interface_document",
+        "get_change_request",
+        "get_release_notes",
+        "read_source",
+        "discover_implicit_contract",
+        "create_probe_spec",
+        "get_probe_result",
+        "get_first_divergence"
+      ],
+      "disabled": false
+    }
+  }
+}

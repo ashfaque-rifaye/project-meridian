@@ -1,0 +1,171 @@
+{
+  "adapter": "kubernetes",
+  "source": "kubectl --context aks-test-eus2 get deployments -A -o json",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "cluster": "aks-test-eus2",
+  "platform": "AKS",
+  "cloud": "Azure",
+  "region": "eastus2",
+  "_synthetic": true,
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "payment-service",
+        "namespace": "payments",
+        "labels": {
+          "app.kubernetes.io/name": "payment-service",
+          "app.kubernetes.io/version": "8.4",
+          "app.kubernetes.io/managed-by": "helm",
+          "app.kubernetes.io/part-of": "order-to-ledger"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "42",
+          "org.opencontainers.image.revision": "381651e",
+          "org.opencontainers.image.version": "8.4"
+        }
+      },
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-test"
+            },
+            "containers": [
+              {
+                "name": "payment-service",
+                "image": "acmepayments.azurecr.io/payments/payment-service:8.4@sha256:4e4ec7d45bffa9a231f994c94fceba5479c20573402298b6ba74e17f0d95650c",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.test.acme.internal:4317"
+                  },
+                  {
+                    "name": "KAFKA_BOOTSTRAP",
+                    "value": "lkc-test-orders.confluent.cloud:9092"
+                  },
+                  {
+                    "name": "PSP_TIMEOUT_MS",
+                    "value": "4000"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 2,
+        "readyReplicas": 2,
+        "availableReplicas": 2,
+        "updatedReplicas": 2,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-23T08:40:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-23T08:40:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "fraud-scoring",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "fraud-scoring",
+          "app.kubernetes.io/version": "1.14",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "55",
+          "org.opencontainers.image.revision": "f7dfcde",
+          "org.opencontainers.image.version": "1.14"
+        }
+      },
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-test"
+            },
+            "containers": [
+              {
+                "name": "fraud-scoring",
+                "image": "registry.acme.internal/shared/fraud-scoring:1.14@sha256:57e800049b8e72a73ebf0ebbc81cd24ad591296bcf33a8e2af6dcc7e46c1134a",
+                "resources": {
+                  "requests": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "512Mi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "DEBUG"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.test.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 2,
+        "readyReplicas": 2,
+        "availableReplicas": 2,
+        "updatedReplicas": 2,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-19T12:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

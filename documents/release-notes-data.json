@@ -1,0 +1,83 @@
+{
+  "release": "R-26.9",
+  "title": "Customer ID expansion and currency code support",
+  "summary": "Increase customerId capacity from 10 to 12 characters and introduce mandatory currencyCode support for ledger transactions.",
+  "changed_services": [
+    {
+      "component": "order-api",
+      "from": "4.7",
+      "to": "4.8",
+      "team": "Order Platform",
+      "deployed_by": "GitHub Actions + Argo CD"
+    },
+    {
+      "component": "payment-service",
+      "from": "8.3",
+      "to": "8.4",
+      "team": "Payments",
+      "deployed_by": "Azure DevOps"
+    },
+    {
+      "component": "kafka-orders",
+      "from": "v3",
+      "to": "v4",
+      "team": "Streaming Platform",
+      "deployed_by": "GitHub Actions (schema pipeline)"
+    },
+    {
+      "component": "billing-service",
+      "from": "7.1",
+      "to": "7.2",
+      "team": "Billing",
+      "deployed_by": "Google Cloud Deploy"
+    },
+    {
+      "component": "mq-bridge",
+      "from": "3.0",
+      "to": "3.1",
+      "team": "Integration Services",
+      "deployed_by": "Argo CD (OpenShift GitOps)"
+    },
+    {
+      "component": "legacy-ledger",
+      "from": "6.9",
+      "to": "7.0",
+      "team": "Core Ledger",
+      "deployed_by": "Jenkins + CAB change window"
+    },
+    {
+      "component": "ledger-db",
+      "from": "V14",
+      "to": "V15",
+      "team": "Core Ledger DBA",
+      "deployed_by": "Flyway via Jenkins + CAB"
+    }
+  ],
+  "deployment_dependencies": [
+    "mq-bridge 3.1 emits LEDGREC rev 7 (25 bytes) and requires legacy-ledger >= 7.0 on LEDGER.IN.",
+    "legacy-ledger 7.0 accepts LEDGREC rev 6 and rev 7, so it must be deployed before mq-bridge 3.1.",
+    "legacy-ledger 7.0 requires ledger-db V15 (CUSTOMER_ID VARCHAR(12), CURRENCY_CODE).",
+    "payment-service 8.4 publishes orders-value v4; billing-service 7.2 must consume v4."
+  ],
+  "rollout_order": [
+    "ledger-db V15",
+    "legacy-ledger 7.0",
+    "kafka-orders v4",
+    "payment-service 8.4",
+    "order-api 4.8",
+    "billing-service 7.2",
+    "mq-bridge 3.1"
+  ],
+  "migration_requirements": [
+    "Flyway V15 on LEDGDB before legacy-ledger 7.0 starts.",
+    "orders-value schema v4 registered before payment-service 8.4 deploys."
+  ],
+  "compatibility_notes": [
+    "LEDGREC rev 7 is 25 bytes: customerId(12) currencyCode(3) amount(10).",
+    "legacy-ledger 7.0 selects the layout by record length and accepts rev 6 (23 bytes) and rev 7 (25 bytes).",
+    "legacy-ledger 6.9 only knows rev 6. It is not supported with mq-bridge 3.1."
+  ],
+  "validated_in": "Stage \u00b7 stage-e2e-order-to-ledger \u00b7 2026-09-24 14:30 UTC \u00b7 PASS",
+  "_synthetic": true,
+  "document": "release-notes.docx"
+}

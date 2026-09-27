@@ -1,0 +1,336 @@
+{
+  "adapter": "kubernetes",
+  "source": "kubectl --context gke-prod-use4 get deployments -A -o json",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "cluster": "gke-prod-use4",
+  "platform": "GKE",
+  "cloud": "Google Cloud",
+  "region": "us-east4",
+  "_synthetic": true,
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "web-checkout",
+        "namespace": "checkout",
+        "labels": {
+          "app.kubernetes.io/name": "web-checkout",
+          "app.kubernetes.io/version": "2.3",
+          "app.kubernetes.io/managed-by": "helm",
+          "app.kubernetes.io/part-of": "order-to-ledger"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "44",
+          "org.opencontainers.image.revision": "470f5dd",
+          "org.opencontainers.image.version": "2.3"
+        }
+      },
+      "spec": {
+        "replicas": 6,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-prod"
+            },
+            "containers": [
+              {
+                "name": "web-checkout",
+                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/web-checkout:2.3@sha256:42b3dc2973cec7660bc5ecab7f8deea82ab33902d1879e5bea2b85f6d6d2d9c7",
+                "resources": {
+                  "requests": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  },
+                  "limits": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "WARN"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.prod.acme.internal:4317"
+                  },
+                  {
+                    "name": "ORDER_API_URL",
+                    "value": "https://order-api.prod.acme.internal/v2/orders"
+                  },
+                  {
+                    "name": "SESSION_TTL_SECONDS",
+                    "value": "1800"
+                  },
+                  {
+                    "name": "FEATURE_FLAGS",
+                    "value": "express-pay=on,gift-cards=on"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 6,
+        "readyReplicas": 6,
+        "availableReplicas": 6,
+        "updatedReplicas": 6,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-10T08:04:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-10T08:04:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "billing-service",
+        "namespace": "billing",
+        "labels": {
+          "app.kubernetes.io/name": "billing-service",
+          "app.kubernetes.io/version": "7.2",
+          "app.kubernetes.io/managed-by": "helm",
+          "app.kubernetes.io/part-of": "order-to-ledger"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "50",
+          "org.opencontainers.image.revision": "a736b1b",
+          "org.opencontainers.image.version": "7.2"
+        }
+      },
+      "spec": {
+        "replicas": 4,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-prod"
+            },
+            "containers": [
+              {
+                "name": "billing-service",
+                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/billing-service:7.2@sha256:4e5481ba7ef6cd02005fe02e8f18e80cea41da00494c859ad470c2d8e9ac7c9f",
+                "resources": {
+                  "requests": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  },
+                  "limits": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "WARN"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.prod.acme.internal:4317"
+                  },
+                  {
+                    "name": "MQ_QMGR",
+                    "value": "QM.INTEG.01"
+                  },
+                  {
+                    "name": "MQ_CONN",
+                    "value": "mq-prod-dc2-01(1414)"
+                  },
+                  {
+                    "name": "BATCH_SIZE",
+                    "value": "200"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 4,
+        "readyReplicas": 4,
+        "availableReplicas": 4,
+        "updatedReplicas": 4,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-25T07:30:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-25T07:30:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "search-api",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "search-api",
+          "app.kubernetes.io/version": "5.11",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "40",
+          "org.opencontainers.image.revision": "39c304f",
+          "org.opencontainers.image.version": "5.11"
+        }
+      },
+      "spec": {
+        "replicas": 6,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-prod"
+            },
+            "containers": [
+              {
+                "name": "search-api",
+                "image": "registry.acme.internal/shared/search-api:5.11@sha256:8e536c4f17c85e5018d06552b86e8b5d7cde5a3cae189a6fbd777fef56c25898",
+                "resources": {
+                  "requests": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  },
+                  "limits": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "WARN"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.prod.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 6,
+        "readyReplicas": 6,
+        "availableReplicas": 6,
+        "updatedReplicas": 6,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-18T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-18T12:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "recommendations",
+        "namespace": "shared",
+        "labels": {
+          "app.kubernetes.io/name": "recommendations",
+          "app.kubernetes.io/version": "3.2",
+          "app.kubernetes.io/managed-by": "argocd"
+        },
+        "annotations": {
+          "deployment.kubernetes.io/revision": "65",
+          "org.opencontainers.image.revision": "b864029",
+          "org.opencontainers.image.version": "3.2"
+        }
+      },
+      "spec": {
+        "replicas": 6,
+        "template": {
+          "spec": {
+            "nodeSelector": {
+              "acme.io/node-pool": "general-prod"
+            },
+            "containers": [
+              {
+                "name": "recommendations",
+                "image": "registry.acme.internal/shared/recommendations:3.2@sha256:87fbdbea497b8e67b3beb07de9ff8d3aa1589a8beb27ac5722e92ea668cf22a4",
+                "resources": {
+                  "requests": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  },
+                  "limits": {
+                    "cpu": "1000m",
+                    "memory": "2Gi"
+                  }
+                },
+                "env": [
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "WARN"
+                  },
+                  {
+                    "name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                    "value": "http://otel-collector.prod.acme.internal:4317"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "replicas": 6,
+        "readyReplicas": 6,
+        "availableReplicas": 6,
+        "updatedReplicas": 6,
+        "conditions": [
+          {
+            "type": "Available",
+            "status": "True",
+            "reason": "MinimumReplicasAvailable",
+            "lastUpdateTime": "2026-09-18T12:00:00Z"
+          },
+          {
+            "type": "Progressing",
+            "status": "True",
+            "reason": "NewReplicaSetAvailable",
+            "lastUpdateTime": "2026-09-18T12:00:00Z"
+          }
+        ]
+      }
+    }
+  ]
+}

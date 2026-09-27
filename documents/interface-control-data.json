@@ -1,0 +1,71 @@
+{
+  "id": "LEDG-ICD-007",
+  "title": "Interface Control Document: LEDGER.IN posting record (LEDGREC)",
+  "owner": "Core Ledger",
+  "rev7": [
+    {
+      "Field": "customerId",
+      "Offset": 1,
+      "Length": 12,
+      "Type": "STRING",
+      "Required": "YES",
+      "InterfaceVersion": "rev 7",
+      "Description": "Customer identifier, left aligned, space padded. Widened from 10 in R-26.9."
+    },
+    {
+      "Field": "currencyCode",
+      "Offset": 13,
+      "Length": 3,
+      "Type": "STRING",
+      "Required": "YES",
+      "InterfaceVersion": "rev 7",
+      "Description": "ISO 4217 currency code. New in R-26.9."
+    },
+    {
+      "Field": "amount",
+      "Offset": 16,
+      "Length": 10,
+      "Type": "DECIMAL",
+      "Required": "YES",
+      "InterfaceVersion": "rev 7",
+      "Description": "Amount, zero padded, explicit decimal point, 2 decimals."
+    }
+  ],
+  "rev6": [
+    {
+      "Field": "customerId",
+      "Offset": 1,
+      "Length": 10,
+      "Type": "STRING",
+      "Required": "YES",
+      "InterfaceVersion": "rev 6",
+      "Description": "Customer identifier, left aligned, space padded."
+    },
+    {
+      "Field": "amount",
+      "Offset": 11,
+      "Length": 13,
+      "Type": "DECIMAL",
+      "Required": "YES",
+      "InterfaceVersion": "rev 6",
+      "Description": "Amount, zero padded, explicit decimal point. Currency implied USD."
+    }
+  ],
+  "changelog": [
+    {
+      "Revision": "rev 6",
+      "Date": "2025-11-03",
+      "Change": "Baseline layout, 23 bytes.",
+      "Author": "Core Ledger"
+    },
+    {
+      "Revision": "rev 7",
+      "Date": "2026-09-16",
+      "Change": "customerId 10 -> 12; add currencyCode; amount 13 -> 10. 25 bytes.",
+      "Author": "Core Ledger"
+    }
+  ],
+  "note": "No machine-readable contract exists for this interface. Producers and consumers implement it by hand.",
+  "_synthetic": true,
+  "document": "interface-control.xlsx"
+}

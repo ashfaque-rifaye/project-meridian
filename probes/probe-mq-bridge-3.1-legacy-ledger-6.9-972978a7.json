@@ -1,0 +1,86 @@
+{
+  "probe_id": "probe-mq-bridge-3.1-legacy-ledger-6.9-972978a7",
+  "spec": {
+    "probe_id": "probe-mq-bridge-3.1-legacy-ledger-6.9-972978a7",
+    "edge_id": "mq-bridge--legacy-ledger",
+    "interface": "IBM MQ \u00b7 LEDGER.IN",
+    "probe_type": "fixed-width-record",
+    "contract_id": "contract-8ed96b29d2",
+    "producer": {
+      "component": "mq-bridge",
+      "version": "3.1",
+      "label": "3.1",
+      "commit": "57bb624",
+      "entrypoint": "src/ledger_record.py:to_ledger_record",
+      "config": {}
+    },
+    "consumer": {
+      "component": "legacy-ledger",
+      "version": "6.9",
+      "commit": "2f9ab73",
+      "entrypoint": "src/ldgpost.py:post"
+    },
+    "fixture_source": "Stage validation corpus (environments/validation-runs.json)",
+    "fixtures": [
+      {
+        "id": "fx-new-customer-usd",
+        "label": "New 12-character customer, USD",
+        "event": {
+          "billingId": "BL-100482",
+          "customerId": "CUST12345678",
+          "currencyCode": "USD",
+          "amount": "149.50"
+        },
+        "expect": {
+          "customer_id": "CUST12345678",
+          "currency": "USD",
+          "amount": "149.50"
+        }
+      },
+      {
+        "id": "fx-existing-customer-eur",
+        "label": "Existing 10-character customer, EUR",
+        "event": {
+          "billingId": "BL-100483",
+          "customerId": "CUST000042",
+          "currencyCode": "EUR",
+          "amount": "20.00"
+        },
+        "expect": {
+          "customer_id": "CUST000042",
+          "currency": "EUR",
+          "amount": "20.00"
+        }
+      },
+      {
+        "id": "fx-existing-customer-usd",
+        "label": "Existing 10-character customer, USD",
+        "event": {
+          "billingId": "BL-100484",
+          "customerId": "CUST000017",
+          "currencyCode": "USD",
+          "amount": "1250.00"
+        },
+        "expect": {
+          "customer_id": "CUST000017",
+          "currency": "USD",
+          "amount": "1250.00"
+        }
+      }
+    ],
+    "assertions": [
+      "Every record the producer delivers is posted with exactly the source customer_id.",
+      "Every delivered record is posted with exactly the source currency.",
+      "Every delivered record is posted with exactly the source amount.",
+      "A record the producer cannot represent must be held explicitly, never truncated."
+    ],
+    "isolation": "git archive of each exact commit into a temporary sandbox; python -I subprocess; no environment credentials; no network endpoints configured"
+  },
+  "latest_run": {
+    "run_id": "run-20260927052510815-972978a7",
+    "result": "FAIL",
+    "silent_failure": true,
+    "finished_at": "2026-09-27T05:25:11Z",
+    "evidence_id": "ev-run-20260927052510815-972978a7"
+  }
+}

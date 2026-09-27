@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - MERIDIAN_DB=/app/.meridian/meridian.db
+      - MERIDIAN_DATA=/app/environments
+      - MERIDIAN_DOCS=/app/documents
+      - MERIDIAN_SAMPLE=/app/sample-system
+
+  web:
+    build:
+      context: apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api

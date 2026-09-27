@@ -1,0 +1,10 @@
+service:
+  name: mq-bridge
+  version: "3.0"
+mq:
+  queueManager: QM.INTEG.01
+  channel: INTEG.SVRCONN
+  sourceQueue: BILL.OUT
+  targetQueue: LEDGER.IN
+ledger:
+  recordLayout: v6

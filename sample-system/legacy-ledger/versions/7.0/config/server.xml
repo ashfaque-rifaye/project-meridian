@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- WebSphere Liberty server configuration for legacy-ledger (LDGPOST) -->
+<server description="legacy-ledger">
+    <featureManager>
+        <feature>jakartaee-10.0</feature>
+        <feature>messaging-3.1</feature>
+    </featureManager>
+    <application id="ldgpost" location="ldgpost-7.0.ear" />
+    <jmsQueue jndiName="jms/LedgerIn">
+        <properties.wmqjmsra baseQueueName="LEDGER.IN" baseQueueManagerName="QM.LEDG.01" />
+    </jmsQueue>
+    <dataSource jndiName="jdbc/LedgerDb">
+        <properties.db2.jcc databaseName="LEDGDB" serverName="db2-ldg01" portNumber="50000" />
+    </dataSource>
+</server>

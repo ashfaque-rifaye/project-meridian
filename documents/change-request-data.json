@@ -1,0 +1,36 @@
+{
+  "id": "CR-4471",
+  "title": "Upgrade legacy-ledger to 7.0 and apply Db2 migration V15 (LEDGREC rev 7)",
+  "release": "R-26.9",
+  "requested_by": "Ruth Adeyemi (Core Ledger)",
+  "change_type": "Normal",
+  "risk": "Medium",
+  "cab": "CAB-0924 \u00b7 approved 2026-09-24",
+  "window": "Sunday 2026-09-27 02:00-04:00 UTC",
+  "status": "Scheduled",
+  "components": [
+    {
+      "component": "ledger-db",
+      "from": "V14",
+      "to": "V15",
+      "target": "db2-prod-ldg01 / LEDGDB"
+    },
+    {
+      "component": "legacy-ledger",
+      "from": "6.9",
+      "to": "7.0",
+      "target": "was-prod-ldg-03 (Liberty)"
+    }
+  ],
+  "dependency": "mq-bridge 3.1 emits LEDGREC rev 7. This change MUST be completed before mq-bridge 3.1 is promoted to Production.",
+  "implementation": [
+    "Quiesce LEDGER.IN consumers (stop LDGPOST listener).",
+    "Apply Flyway migration V15 to LEDGDB (widen CUSTOMER_ID, add CURRENCY_CODE).",
+    "Deploy ldgpost-7.0.ear to was-prod-ldg-03 and restart Liberty.",
+    "Resume LEDGER.IN consumers and verify postings for rev 6 and rev 7 records."
+  ],
+  "backout": "Redeploy ldgpost-6.9.ear. V15 is additive; no schema rollback required.",
+  "verification": "Post one rev 6 and one rev 7 test record; compare LEDGER.TRANSACTIONS rows with source events.",
+  "_synthetic": true,
+  "document": "change-request.pdf"
+}

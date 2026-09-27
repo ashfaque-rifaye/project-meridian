@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "SettledOrder",
+  "namespace": "com.example.orders",
+  "doc": "Topic orders.v1, subject orders-value, version 4 (R-26.9). Compatibility: BACKWARD.",
+  "fields": [
+    {"name": "orderId", "type": "string"},
+    {"name": "customerId", "type": "string", "doc": "max 12 characters (R-26.9)"},
+    {"name": "currencyCode", "type": "string", "default": "USD"},
+    {"name": "amount", "type": "string"},
+    {"name": "settledAt", "type": "string"}
+  ]
+}

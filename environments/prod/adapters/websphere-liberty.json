@@ -1,0 +1,42 @@
+{
+  "adapter": "websphere-liberty",
+  "source": "Liberty Admin Center REST export + vSphere inventory",
+  "collected_at": "2026-09-25T16:20:00Z",
+  "_synthetic": true,
+  "servers": [
+    {
+      "host": "was-prod-ldg-03.dc2.acme.internal",
+      "vm": {
+        "vcenter": "vcsa-dc2.acme.internal",
+        "cluster": "vsphere-dc2-ledger",
+        "cpu": 8,
+        "memory_gb": 32
+      },
+      "liberty": {
+        "version": "24.0.0.9",
+        "java": "IBM Semeru Runtime 17.0.12"
+      },
+      "jvm": {
+        "heap_max": "4096m"
+      },
+      "applications": [
+        {
+          "name": "ldgpost",
+          "archive": "ldgpost-6.9.ear",
+          "state": "STARTED",
+          "deployed_at": "2026-09-21T18:03:00Z",
+          "manifest": {
+            "Implementation-Title": "LDGPOST",
+            "Implementation-Version": "6.9",
+            "Implementation-Build": "2f9ab73",
+            "Implementation-Vendor": "Acme Core Ledger"
+          },
+          "mq": {
+            "queue_manager": "QM.LEDG.01",
+            "queue": "LEDGER.IN"
+          }
+        }
+      ]
+    }
+  ]
+}
