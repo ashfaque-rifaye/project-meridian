@@ -4,17 +4,17 @@ import type { Go } from '../App'
 import { Card, ErrorBox, Loading, PageHead, State } from '../components/ui'
 
 const CLASS_LABEL: Record<string, string> = {
-  irrelevant: 'not on this flow',
-  relevant: 'operational · flow component',
-  'contract-affecting': 'version change · boundaries still validated',
-  'release-convergence-risk': 'creates an unvalidated pair',
+  irrelevant: 'not part of this flow',
+  relevant: 'setting change · no effect on connections',
+  'contract-affecting': 'version change · connections still tested',
+  'release-convergence-risk': 'leaves a connection untested',
 }
 
 export default function DriftRelevance({ go }: { go: Go }) {
   const { data, error } = useApi('/drift')
   const [filter, setFilter] = useState<string>('all')
   if (error) return <div className="page"><ErrorBox error={error} /></div>
-  if (!data) return <div className="page"><Loading what="Diffing STAGE and PROD" /></div>
+  if (!data) return <div className="page"><Loading what="Comparing STAGE and PROD" /></div>
 
   const stageMap: Record<string, string[]> = {
     raw: ['irrelevant', 'relevant', 'contract-affecting', 'release-convergence-risk'],
@@ -28,11 +28,11 @@ export default function DriftRelevance({ go }: { go: Go }) {
 
   return (
     <div className="page">
-      <PageHead eyebrow="Understand · drift relevance" title={<>{top} differences. <span className="grad-text">One that matters.</span></>}
-        sub="A naive diff treats every difference between Stage and Prod as equally important. Meridian keeps only what changes a dependency boundary without validation evidence." />
+      <PageHead eyebrow="What changed · Stage vs production" title={<>{top} differences. <span className="grad-text">One that matters.</span></>}
+        sub="A plain diff treats every difference between Stage and production as equally important. Meridian keeps only the changes that leave a connection between two services untested." />
 
       <div className="grid g-1-2">
-        <Card title="Meridian narrows it down">
+        <Card title="Narrowing it down" right={<span className="small muted">click a step to filter the list</span>}>
           <div className="funnel">
             {data.funnel.map((f: any, i: number) => (
               <div key={f.stage} className={`funnel-step ${i === data.funnel.length - 1 ? 'last' : ''} ${filter === f.stage ? 'sel' : ''}`}
@@ -53,22 +53,21 @@ export default function DriftRelevance({ go }: { go: Go }) {
             <div key={b.edge_id} className="glass mt-s" style={{ padding: 12 }}>
               <div className="row between"><span className="strong">{b.label}</span><State s={b.target_evidence === 'VERIFIED' ? 'VERIFIED' : b.probe === 'FAIL' ? 'FAILED' : 'UNTESTED'} /></div>
               <div className="small mono muted">STAGE {b.reference_pair.join(' → ')} · PROD {b.target_pair.join(' → ')}</div>
-              <div className="tiny dim">strongest evidence for the PROD pair: {b.target_evidence}</div>
+              <div className="tiny dim">best test record for the PROD pair: <State s={b.target_evidence} /></div>
             </div>
           ))}
           {data.boundary_changes.some((b: any) => b.probe === 'FAIL') && (
-            <button className="btn danger mt" onClick={() => go('/divergence')}>Open the first demonstrated divergence</button>
+            <button className="btn danger mt" onClick={() => go('/divergence')}>See the failing connection</button>
           )}
-          <div className="tiny dim mt">{data.note}</div>
         </Card>
 
-        <Card title={<>Naive environment diff · {diffs.length} shown</>} right={
+        <Card title={<>All differences · {diffs.length} shown</>} right={
           <div className="tabs">
-            {['all', 'flow', 'boundary', 'unvalidated'].map((f) => <button key={f} className={`tab ${filter === f ? 'on' : ''}`} onClick={() => setFilter(f)}>{f}</button>)}
+            {[['all', 'all'], ['flow', 'this flow'], ['boundary', 'version changes'], ['unvalidated', 'untested']].map(([f, label]) => <button key={f} className={`tab ${filter === f ? 'on' : ''}`} onClick={() => setFilter(f)}>{label}</button>)}
           </div>}>
           <div style={{ maxHeight: 640, overflow: 'auto' }}>
             <table className="tbl">
-              <thead><tr><th>Workload</th><th>Attribute</th><th>STAGE</th><th>PROD</th><th>Meridian</th></tr></thead>
+              <thead><tr><th>Workload</th><th>Setting</th><th>STAGE</th><th>PROD</th><th>Impact</th></tr></thead>
               <tbody>
                 {diffs.map((d: any, i: number) => (
                   <tr key={i} className={d.classification === 'release-convergence-risk' ? 'hl' : ''} style={{ opacity: d.classification === 'irrelevant' ? 0.55 : 1 }}>

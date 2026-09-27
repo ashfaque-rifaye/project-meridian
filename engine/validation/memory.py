@@ -116,22 +116,22 @@ def describe(evidence: EdgeEvidence, target_env: str | None = None) -> str:
     """One-line human description, never stronger than the evidence."""
     if evidence.tier == EvidenceTier.VERIFIED:
         v = evidence.verified[-1]
-        return (f"Verified in {v['environment'].upper()} by {v['suite']} "
-                f"({v['semantic_assertions']} semantic assertions passed).")
+        return (f"Tested in {v['environment'].upper()} by {v['suite']} "
+                f"({v['semantic_assertions']} data checks passed).")
     parts = []
     for e in evidence.exercised:
-        parts.append(f"exercised in {e['environment'].upper()} by {e['suite']} "
-                     f"({e['messages']} message, 0 semantic assertions)")
+        parts.append(f"smoke tested in {e['environment'].upper()} by {e['suite']} "
+                     f"({e['messages']} message, no data checks)")
     for w in evidence.observed:
         if w["environment"] == target_env and w["ongoing"]:
             continue
         hours = w["duration_seconds"] / 3600
-        parts.append(f"observed together in {w['environment'].upper()} for {hours:.1f}h")
+        parts.append(f"ran side by side in {w['environment'].upper()} for {hours:.1f}h")
     if evidence.failed:
         parts.append(f"failed in {evidence.failed[-1]['environment'].upper()}")
     if not parts:
-        return "This exact pair never existed on the promotion path."
-    return "Never verified. " + "; ".join(parts).capitalize() + "."
+        return "This exact pair never ran in any earlier environment."
+    return "Never fully tested. " + "; ".join(parts).capitalize() + "."
 
 
 def pair_validated(edge: DependencyEdge, producer_version: str, consumer_version: str) -> bool:

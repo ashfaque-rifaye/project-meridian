@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useRef, useState } from 'react'
 import { post, useDataVersion } from './api'
+import { fromApi } from './labels'
 
 export type AgentState = { id: string; name: string; stage: string; skill: string; bob: string; status: string; summary?: string; duration_ms?: number }
 
@@ -42,7 +43,7 @@ export function InvestigationProvider({ children }: { children: ReactNode }) {
     const es = new EventSource(`/api/investigations/${investigation_id}/events`)
     source.current = es
     es.onmessage = (msg) => {
-      const e = JSON.parse(msg.data)
+      const e = fromApi(JSON.parse(msg.data))
       setState((s) => {
         switch (e.type) {
           case 'start': {

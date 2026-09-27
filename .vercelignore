@@ -1,0 +1,20 @@
+# Keep deployment focused on the hosted app and its runtime fixtures.
+.git
+.lockstep
+bob_sessions
+tests
+demo
+docs
+mcp/server
+apps/web/node_modules
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+apps/web/*.tsbuildinfo
+
+# The deterministic probe engine needs the generated local Git repositories.
+!.meridian/
+!.meridian/repos/
+!.meridian/repos/**
+!.meridian/repos/**/.git/
+!.meridian/repos/**/.git/**

@@ -1,6 +1,6 @@
 {
   "packet_id": "pkt-fdd-prod-mq-bridge--legacy-ledger-3.1-6.9",
-  "generated_at": "2026-09-27T05:25:11Z",
+  "generated_at": "2026-09-27T14:28:40Z",
   "synthetic": true,
   "release": "R-26.9",
   "environment": "prod",
@@ -10,14 +10,14 @@
   "upstream": {
     "component": "mq-bridge",
     "version": "3.1",
-    "commit": "57bb624",
+    "commit": "b804772",
     "artifact": "environments/prod/adapters/kubernetes-ocp-prod-dc2.json",
     "deployed_at": "2026-09-25T11:42:00Z"
   },
   "downstream": {
     "component": "legacy-ledger",
     "version": "6.9",
-    "commit": "2f9ab73",
+    "commit": "997c88b",
     "artifact": "environments/prod/adapters/websphere-liberty.json",
     "deployed_at": "2026-09-21T18:03:00Z"
   },
@@ -48,8 +48,8 @@
           "fx-existing-customer-usd"
         ],
         "result": "PASS",
-        "producer_commit": "57bb624",
-        "consumer_commit": "2f9ab73"
+        "producer_commit": "b804772",
+        "consumer_commit": "997c88b"
       }
     ],
     "observed": [
@@ -63,7 +63,7 @@
           "component": "mq-bridge",
           "from_version": "3.0",
           "to_version": "3.1",
-          "commit": "57bb624",
+          "commit": "b804772",
           "deployed_at": "2026-09-22T10:15:00Z",
           "tool": "Argo CD (OpenShift GitOps)",
           "trigger": "auto-sync",
@@ -86,7 +86,7 @@
           "component": "mq-bridge",
           "from_version": "3.0",
           "to_version": "3.1",
-          "commit": "57bb624",
+          "commit": "b804772",
           "deployed_at": "2026-09-23T09:00:00Z",
           "tool": "Argo CD (OpenShift GitOps)",
           "trigger": "auto-sync",
@@ -109,7 +109,7 @@
           "component": "mq-bridge",
           "from_version": "3.0",
           "to_version": "3.1",
-          "commit": "57bb624",
+          "commit": "b804772",
           "deployed_at": "2026-09-25T11:42:00Z",
           "tool": "Argo CD (OpenShift GitOps)",
           "trigger": "auto-sync",
@@ -126,19 +126,19 @@
     "failed": []
   },
   "implicit_contract": {
-    "contract_id": "contract-8ed96b29d2",
+    "contract_id": "contract-2168004bf6",
     "status": "DISCOVERED",
-    "summary": "Consumer slices with LEDGREC (23 bytes) and ignores the remaining 2 byte(s); no error is raised. Fields at risk: customer_id, currency_code, amount.",
+    "summary": "The receiver reads the message with LEDGREC (23 bytes) and ignores the last 2 byte(s) without raising an error. Fields at risk: customer_id, currency_code, amount.",
     "constraints": [
       {
         "field": "customer_id",
         "producer": "12 bytes at 1",
         "consumer": "10 bytes at 1 (PIC X(10))",
         "compatible": false,
-        "risk": "Value is silently truncated.",
-        "detail": "Consumer reads 10 of the 12 bytes the producer writes.",
-        "producer_source": "mq-bridge@57bb624:src/ledger_record.py#L21",
-        "consumer_source": "legacy-ledger@2f9ab73:copybooks/LEDGREC.cpy#L8"
+        "risk": "Value is silently cut off.",
+        "detail": "The receiver reads 10 of the 12 bytes the sender writes.",
+        "producer_source": "mq-bridge@b804772:src/ledger_record.py#L21",
+        "consumer_source": "legacy-ledger@997c88b:copybooks/LEDGREC.cpy#L8"
       },
       {
         "field": "currency_code",
@@ -146,27 +146,27 @@
         "consumer": "absent",
         "compatible": false,
         "risk": "Value is silently dropped.",
-        "detail": "Consumer has no such field; A record without a currency field is booked in USD.",
-        "producer_source": "mq-bridge@57bb624:src/ledger_record.py#L22",
-        "consumer_source": "legacy-ledger@2f9ab73:src/ldgpost.py#L19"
+        "detail": "The receiver has no such field; A record without a currency field is booked in USD.",
+        "producer_source": "mq-bridge@b804772:src/ledger_record.py#L22",
+        "consumer_source": "legacy-ledger@997c88b:src/ldgpost.py#L19"
       },
       {
         "field": "amount",
         "producer": "10 bytes at 16",
         "consumer": "13 bytes at 11 (PIC X(13))",
         "compatible": false,
-        "risk": "Field boundaries are misaligned; the consumer reads bytes that belong to other fields.",
-        "detail": "Producer bytes 16-25; consumer reads 11-23.",
-        "producer_source": "mq-bridge@57bb624:src/ledger_record.py#L23",
-        "consumer_source": "legacy-ledger@2f9ab73:copybooks/LEDGREC.cpy#L9"
+        "risk": "Fields are out of line; the receiver reads bytes that belong to other fields.",
+        "detail": "Sender writes bytes 16-25; receiver reads 11-23.",
+        "producer_source": "mq-bridge@b804772:src/ledger_record.py#L23",
+        "consumer_source": "legacy-ledger@997c88b:copybooks/LEDGREC.cpy#L9"
       }
     ],
     "prediction": "INCOMPATIBLE"
   },
   "probe": {
-    "run_id": "run-20260927052510815-972978a7",
-    "probe_id": "probe-mq-bridge-3.1-legacy-ledger-6.9-972978a7",
-    "evidence_id": "ev-run-20260927052510815-972978a7",
+    "run_id": "run-20260927142840440-f57598c0",
+    "probe_id": "probe-mq-bridge-3.1-legacy-ledger-6.9-f57598c0",
+    "evidence_id": "ev-run-20260927142840440-f57598c0",
     "result": "FAIL",
     "silent_failure": true,
     "fixtures": [
@@ -305,11 +305,11 @@
     ],
     "assertions_total": 9,
     "assertions_failed": 3,
-    "sandbox": ".meridian/sandbox/run-20260927052510815-972978a7",
+    "sandbox": ".meridian/sandbox/run-20260927142840440-f57598c0",
     "isolation": "git archive of each exact commit into a temporary sandbox; python -I subprocess; no environment credentials; no network endpoints configured",
-    "started_at": "2026-09-27T05:25:10Z",
-    "finished_at": "2026-09-27T05:25:11Z",
-    "duration_ms": 276
+    "started_at": "2026-09-27T14:28:40Z",
+    "finished_at": "2026-09-27T14:28:40Z",
+    "duration_ms": 224
   },
   "first_divergence_timestamp": "2026-09-25T11:42:00Z",
   "triggering_deployment": {
@@ -318,7 +318,7 @@
     "component": "mq-bridge",
     "from_version": "3.0",
     "to_version": "3.1",
-    "commit": "57bb624",
+    "commit": "b804772",
     "deployed_at": "2026-09-25T11:42:00Z",
     "tool": "Argo CD (OpenShift GitOps)",
     "trigger": "auto-sync",
@@ -329,10 +329,10 @@
   },
   "promotion_pattern": [
     "mq-bridge 3.1 reached PROD at 2026-09-25T11:42:00Z via Argo CD (OpenShift GitOps) (auto-sync).",
-    "The runbook puts it at step 7, after ledger-db V15 (step 1), legacy-ledger 7.0 (step 2).",
+    "The runbook says it should go at step 7, after ledger-db V15 (step 1), legacy-ledger 7.0 (step 2).",
     "ledger-db V15 is scheduled in CR-4471 for 2026-09-27T02:00:00Z (Scheduled \u00b7 CAB approved 2026-09-24).",
     "legacy-ledger 7.0 is scheduled in CR-4471 for 2026-09-27T02:00:00Z (Scheduled \u00b7 CAB approved 2026-09-24).",
-    "Independent promotion cadences, not a single failed deployment, assembled a composition that no environment on the promotion path ever validated."
+    "No single deployment failed. Teams deploying on different schedules produced a set of versions that no earlier environment ever tested."
   ],
   "evidence_items": [
     {
@@ -359,63 +359,63 @@
     {
       "kind": "validation",
       "id": "val-dev-r269-smoke-0922:mq-bridge--legacy-ledger",
-      "title": "EXERCISED only: ledger-connectivity-smoke in DEV (1 message, 0 semantic assertions)",
+      "title": "Smoke test only: ledger-connectivity-smoke in DEV (1 message, 0 data checks)",
       "source": "environments/validation-runs.json",
       "at": "2026-09-22T11:05:00Z"
     },
     {
       "kind": "coexistence",
       "id": "coexist-dev-mq-bridge--legacy-ledger-3.1-6.9-2026-09-22T10:15",
-      "title": "OBSERVED TOGETHER in DEV for 5.4h",
+      "title": "Ran side by side in DEV for 5.4h",
       "source": "environments/deployment-events.json",
       "at": "2026-09-22T10:15:00Z"
     },
     {
       "kind": "coexistence",
       "id": "coexist-test-mq-bridge--legacy-ledger-3.1-6.9-2026-09-23T09:00",
-      "title": "OBSERVED TOGETHER in TEST for 4.5h",
+      "title": "Ran side by side in TEST for 4.5h",
       "source": "environments/deployment-events.json",
       "at": "2026-09-23T09:00:00Z"
     },
     {
       "kind": "coexistence",
       "id": "coexist-prod-mq-bridge--legacy-ledger-3.1-6.9-2026-09-25T11:42",
-      "title": "OBSERVED TOGETHER in PROD for 4.6h (current)",
+      "title": "Ran side by side in PROD for 4.6h (still running)",
       "source": "environments/deployment-events.json",
       "at": "2026-09-25T11:42:00Z"
     },
     {
       "kind": "source",
-      "id": "contract-8ed96b29d2:customer_id",
-      "title": "customer_id: producer 12 bytes at 1 \u00b7 consumer 10 bytes at 1 (PIC X(10))",
-      "source": "mq-bridge@57bb624:src/ledger_record.py#L21 \u21c4 legacy-ledger@2f9ab73:copybooks/LEDGREC.cpy#L8",
+      "id": "contract-2168004bf6:customer_id",
+      "title": "customer_id: sender writes 12 bytes at 1 \u00b7 receiver reads 10 bytes at 1 (PIC X(10))",
+      "source": "mq-bridge@b804772:src/ledger_record.py#L21 \u21c4 legacy-ledger@997c88b:copybooks/LEDGREC.cpy#L8",
       "at": null
     },
     {
       "kind": "source",
-      "id": "contract-8ed96b29d2:currency_code",
-      "title": "currency_code: producer 3 bytes at 13 \u00b7 consumer absent",
-      "source": "mq-bridge@57bb624:src/ledger_record.py#L22 \u21c4 legacy-ledger@2f9ab73:src/ldgpost.py#L19",
+      "id": "contract-2168004bf6:currency_code",
+      "title": "currency_code: sender writes 3 bytes at 13 \u00b7 receiver reads absent",
+      "source": "mq-bridge@b804772:src/ledger_record.py#L22 \u21c4 legacy-ledger@997c88b:src/ldgpost.py#L19",
       "at": null
     },
     {
       "kind": "source",
-      "id": "contract-8ed96b29d2:amount",
-      "title": "amount: producer 10 bytes at 16 \u00b7 consumer 13 bytes at 11 (PIC X(13))",
-      "source": "mq-bridge@57bb624:src/ledger_record.py#L23 \u21c4 legacy-ledger@2f9ab73:copybooks/LEDGREC.cpy#L9",
+      "id": "contract-2168004bf6:amount",
+      "title": "amount: sender writes 10 bytes at 16 \u00b7 receiver reads 13 bytes at 11 (PIC X(13))",
+      "source": "mq-bridge@b804772:src/ledger_record.py#L23 \u21c4 legacy-ledger@997c88b:copybooks/LEDGREC.cpy#L9",
       "at": null
     },
     {
       "kind": "document",
       "id": "icd:LEDGREC rev 7",
-      "title": "LEDG-ICD-007 \u00b7 LEDGREC rev 7 (3 fields)",
+      "title": "Interface spreadsheet \u00b7 LEDGREC rev 7 (3 fields)",
       "source": "interface-control.xlsx",
       "at": null
     },
     {
       "kind": "document",
       "id": "icd:LEDGREC rev 6",
-      "title": "LEDG-ICD-007 \u00b7 LEDGREC rev 6 (2 fields)",
+      "title": "Interface spreadsheet \u00b7 LEDGREC rev 6 (2 fields)",
       "source": "interface-control.xlsx",
       "at": null
     },
@@ -428,13 +428,13 @@
     },
     {
       "kind": "probe",
-      "id": "ev-run-20260927052510815-972978a7",
-      "title": "Probe FAIL: 3 of 9 semantic assertions failed (silent)",
-      "source": ".meridian/runs/run-20260927052510815-972978a7.json",
-      "at": "2026-09-27T05:25:11Z"
+      "id": "ev-run-20260927142840440-f57598c0",
+      "title": "Compatibility test FAIL: 3 of 9 data checks failed (no error raised)",
+      "source": ".meridian/runs/run-20260927142840440-f57598c0.json",
+      "at": "2026-09-27T14:28:40Z"
     }
   ],
-  "human_summary": "PROD entered a new unvalidated composition at 2026-09-25T11:42:00Z when mq-bridge 3.1 was promoted while legacy-ledger remained at 6.9. No passing validation evidence exists for mq-bridge 3.1 \u2192 legacy-ledger 6.9 on the promotion path. The isolated probe reproduced a silent semantic incompatibility: 3 of 9 assertions failed while every record was acknowledged and committed.",
+  "human_summary": "Since 2026-09-25T11:42:00Z, PROD has been running versions that were never tested together: mq-bridge 3.1 was deployed while legacy-ledger stayed on 6.9. No earlier environment has a passing test for mq-bridge 3.1 \u2192 legacy-ledger 6.9. The sandbox compatibility test failed without raising an error: 3 of 9 data checks failed, even though every message was accepted and saved.",
   "claim_type": "First Demonstrated Divergence (factual observation, not a causal claim)",
   "review": {
     "reviewer": "meridian-evidence-review (deterministic rules; IBM Bob evidence-reviewer skill mirrors them)",
@@ -442,43 +442,43 @@
     "checks": [
       {
         "id": "observed-state",
-        "label": "Running versions come from adapter evidence",
+        "label": "Running versions were read from the environments",
         "passed": true,
         "detail": "mq-bridge from environments/prod/adapters/kubernetes-ocp-prod-dc2.json; legacy-ledger from environments/prod/adapters/websphere-liberty.json"
       },
       {
         "id": "exact-commits",
-        "label": "Probe used the exact deployed commits",
+        "label": "The test used the exact deployed code",
         "passed": true,
-        "detail": "producer 57bb624, consumer 2f9ab73"
+        "detail": "sender b804772, receiver 997c88b"
       },
       {
         "id": "no-verified-evidence",
-        "label": "No VERIFIED evidence exists for this exact pair",
+        "label": "This exact version pair has never passed a full test",
         "passed": true,
-        "detail": "strongest evidence tier: EXERCISED"
+        "detail": "best test record: EXERCISED"
       },
       {
         "id": "coexistence-not-validation",
-        "label": "Co-existence and exercised traffic are not counted as validation",
+        "label": "Running side by side and smoke tests are not counted as tested",
         "passed": true,
-        "detail": "3 co-existence window(s), 1 exercised run(s) reported separately"
+        "detail": "3 side-by-side period(s), 1 smoke test(s) listed separately"
       },
       {
         "id": "execution-decides",
-        "label": "FAILED is based on probe execution, not model judgement",
+        "label": "The failure comes from running the test, not from AI judgement",
         "passed": true,
-        "detail": "deterministic assertion evaluation"
+        "detail": "rule-based check of the saved data"
       },
       {
         "id": "no-causal-claim",
-        "label": "No unsupported causal claims",
+        "label": "No claims beyond what the evidence shows",
         "passed": true,
         "detail": "none found"
       },
       {
         "id": "timestamp",
-        "label": "Divergence timestamp traced to a deployment event",
+        "label": "The start time is linked to a specific deployment",
         "passed": true,
         "detail": "dep-prod-mq-bridge-3_1"
       }

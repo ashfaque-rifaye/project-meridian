@@ -72,16 +72,16 @@ def rehearse(environment: str, changes: list[dict], run_probes: bool = True,
     verdict = evaluation["verdict"]
     first = evaluation["first_divergence_edge"]
     if verdict == "CONVERGED":
-        headline = "Converges: every boundary on the flow has passing validation evidence."
+        headline = "Safe: every connection in the flow has a passing test for these versions."
     elif verdict == "DIVERGED":
         edge = next(e for e in evaluation["edges"] if e["edge_id"] == first)
-        headline = (f"Would create an unvalidated composition. First demonstrated divergence: "
+        headline = (f"Would put untested versions live, and the sandbox test fails. Failing connection: "
                     f"{edge['producer']} {edge['producer_version']} → {edge['consumer']} {edge['consumer_version']}.")
     else:
         pending = [e for e in evaluation["edges"] if e["state"] != "VERIFIED"]
         kinds = sorted({e["state"] for e in pending})
-        headline = (f"Unvalidated: {len(pending)} boundary(ies) lack validation evidence "
-                    f"({', '.join(kinds)}). No failure demonstrated, none ruled out.")
+        headline = (f"Not tested: {len(pending)} connection(s) have no passing test "
+                    f"({', '.join(kinds)}). No failure found yet, but none ruled out.")
 
     rehearsal_id = "reh-" + hashlib.sha1(json.dumps([environment, applied], sort_keys=True).encode()).hexdigest()[:10]
     result = {

@@ -33,27 +33,27 @@ from engine.paths import INVESTIGATIONS, ensure_dirs
 from engine.reconciliation.reconciler import reconstruct_environment
 
 AGENTS = [
-    {"id": "release-investigator", "name": "Release Investigator", "stage": "RECONSTRUCT",
+    {"id": "release-investigator", "name": "Release reader", "stage": "RECONSTRUCT",
      "skill": "release-investigation", "bob": "subagent · general"},
-    {"id": "env-dev", "name": "Environment Investigator · DEV", "stage": "RECONSTRUCT",
+    {"id": "env-dev", "name": "Environment reader · DEV", "stage": "RECONSTRUCT",
      "skill": "environment-reconstruction", "bob": "subagent · explore"},
-    {"id": "env-test", "name": "Environment Investigator · TEST", "stage": "RECONSTRUCT",
+    {"id": "env-test", "name": "Environment reader · TEST", "stage": "RECONSTRUCT",
      "skill": "environment-reconstruction", "bob": "subagent · explore"},
-    {"id": "env-stage", "name": "Environment Investigator · STAGE", "stage": "RECONSTRUCT",
+    {"id": "env-stage", "name": "Environment reader · STAGE", "stage": "RECONSTRUCT",
      "skill": "environment-reconstruction", "bob": "subagent · explore"},
-    {"id": "env-prod", "name": "Environment Investigator · PROD", "stage": "RECONSTRUCT",
+    {"id": "env-prod", "name": "Environment reader · PROD", "stage": "RECONSTRUCT",
      "skill": "environment-reconstruction", "bob": "subagent · explore"},
-    {"id": "validation-memory", "name": "Validation Memory", "stage": "UNDERSTAND",
+    {"id": "validation-memory", "name": "Test history", "stage": "UNDERSTAND",
      "skill": "release-investigation", "bob": "MCP get_untested_edges"},
-    {"id": "drift-relevance", "name": "Drift Relevance", "stage": "UNDERSTAND",
+    {"id": "drift-relevance", "name": "Difference filter", "stage": "UNDERSTAND",
      "skill": "release-investigation", "bob": "MCP get_drift_relevance"},
-    {"id": "contract-discovery", "name": "Contract Discovery", "stage": "UNDERSTAND",
-     "skill": "implicit-contract-discovery", "bob": "subagent · general (one per edge)"},
-    {"id": "probe-engineer", "name": "Probe Engineer", "stage": "PROVE",
+    {"id": "contract-discovery", "name": "Message format finder", "stage": "UNDERSTAND",
+     "skill": "implicit-contract-discovery", "bob": "subagent · general (one per connection)"},
+    {"id": "probe-engineer", "name": "Compatibility tester", "stage": "PROVE",
      "skill": "probe-generation", "bob": "mode meridian-probe-engineer"},
-    {"id": "first-divergence", "name": "First Divergence", "stage": "PROVE",
+    {"id": "first-divergence", "name": "Failing connection finder", "stage": "PROVE",
      "skill": "release-investigation", "bob": "MCP get_first_divergence"},
-    {"id": "evidence-reviewer", "name": "Evidence Reviewer", "stage": "PROVE",
+    {"id": "evidence-reviewer", "name": "Evidence reviewer", "stage": "PROVE",
      "skill": "evidence-review", "bob": "subagent · general"},
 ]
 
@@ -129,7 +129,7 @@ class Investigation:
                 self.agent(a["id"], "queued")
 
             # RECONSTRUCT --------------------------------------------------
-            self.emit("stage", stage="RECONSTRUCT", title="What is actually running?")
+            self.emit("stage", stage="RECONSTRUCT", title="Which versions are live?")
             intent, ms = self._timed("release-investigator", self._release)
             self.agent("release-investigator", "done",
                        f"{intent['release']['id']} changes {sum(1 for c, v in intent['release']['target'].items() if intent['release']['baseline'][c] != v)} components; "
@@ -152,12 +152,12 @@ class Investigation:
                     comp = ", ".join(f"{c} {o.version}" for c, o in reality.components.items()
                                      if c in ("mq-bridge", "legacy-ledger", "ledger-db"))
                     self.agent(f"env-{env}", "done",
-                               f"{len(reality.components)}/8 flow components · {len(reality.sources)} sources · {comp}",
+                               f"{len(reality.components)}/8 services found · {len(reality.sources)} sources · {comp}",
                                duration_ms=ms, snapshot_id=reality.snapshot_id, missing=reality.missing)
             self._pace()
 
             # UNDERSTAND ---------------------------------------------------
-            self.emit("stage", stage="UNDERSTAND", title="Why is this environment different from the validated system?")
+            self.emit("stage", stage="UNDERSTAND", title="What changed since the tested versions?")
             self.agent("validation-memory", "running")
             start = time.perf_counter()
             pre = {env: evaluate_environment(env, run_probes=False) for env in flows.environments()}
@@ -170,7 +170,7 @@ class Investigation:
                 self.log("validation-memory", f"{e['producer']} {e['producer_version']} → {e['consumer']} "
                                               f"{e['consumer_version']}: {e['reason']}")
             self.agent("validation-memory", "done",
-                       f"{self.environment.upper()}: {len(untested)} of {len(target_pre['edges'])} boundaries lack validation evidence",
+                       f"{self.environment.upper()}: {len(untested)} of {len(target_pre['edges'])} connections have no passing test",
                        duration_ms=int((time.perf_counter() - start) * 1000),
                        untested=[e["edge_id"] for e in untested])
             self._pace()
@@ -181,7 +181,7 @@ class Investigation:
             for step in drift["funnel"][:4]:
                 self.log("drift-relevance", f"{step['count']:>4}  {step['label']}")
             self.agent("drift-relevance", "done",
-                       " → ".join(str(s["count"]) for s in drift["funnel"][:4]) + " (differences → relevant boundaries)",
+                       " → ".join(str(s["count"]) for s in drift["funnel"][:4]) + " (all differences → ones that matter)",
                        duration_ms=int((time.perf_counter() - start) * 1000))
             self._pace()
 
@@ -199,19 +199,19 @@ class Investigation:
                 self.log("contract-discovery", f"{edge.label}: {contract['status']} · {contract['summary']}")
                 for constraint in contract.get("constraints", []):
                     mark = "ok " if constraint["compatible"] else "!! "
-                    self.log("contract-discovery", f"  {mark}{constraint['field']:<14} producer {constraint['producer']:<18} "
-                                                   f"consumer {constraint['consumer']}")
+                    self.log("contract-discovery", f"  {mark}{constraint['field']:<14} sender {constraint['producer']:<18} "
+                                                   f"receiver {constraint['consumer']}")
                 if contract.get("probe_spec"):
                     probe_targets.append(contract["probe_spec"])
             self.agent("contract-discovery", "done",
-                       f"{sum(1 for c in contracts.values() if c['status'] == 'DISCOVERED')} implicit contract(s) reconstructed "
-                       f"from code + ICD spreadsheet + release notes + CR",
+                       f"{sum(1 for c in contracts.values() if c['status'] == 'DISCOVERED')} message format(s) rebuilt "
+                       f"from code, the interface spreadsheet, release notes and the change request",
                        duration_ms=int((time.perf_counter() - start) * 1000),
                        contracts=list(contracts))
             self._pace()
 
             # PROVE --------------------------------------------------------
-            self.emit("stage", stage="PROVE", title="What executable evidence supports the result?")
+            self.emit("stage", stage="PROVE", title="Does the connection actually work?")
             from engine.probes.probe_engine import run_probe
             self.agent("probe-engineer", "running")
             start = time.perf_counter()
@@ -223,7 +223,7 @@ class Investigation:
                         self.log("probe-engineer", line["text"])
             self.agent("probe-engineer", "done",
                        ", ".join(f"{r['producer']['component']} → {r['consumer']['component']}: {r['result']}"
-                                 + (" (silent)" if r["silent_failure"] else "") for r in probe_results) or "no probes needed",
+                                 + (" (no error raised)" if r["silent_failure"] else "") for r in probe_results) or "no tests needed",
                        duration_ms=int((time.perf_counter() - start) * 1000),
                        runs=[r["run_id"] for r in probe_results])
             self._pace()
@@ -233,13 +233,14 @@ class Investigation:
             final = evaluate_environment(self.environment, run_probes=False)
             fd = final["first_divergence"]
             if fd:
-                self.log("first-divergence", f"FIRST DEMONSTRATED DIVERGENCE {fd['producer']} {fd['producer_version']} → "
+                self.log("first-divergence", f"FAILING CONNECTION {fd['producer']} {fd['producer_version']} → "
                                              f"{fd['consumer']} {fd['consumer_version']}")
-                self.log("first-divergence", f"unvalidated since {fd['unvalidated_since']} · created by "
+                self.log("first-divergence", f"untested since {fd['unvalidated_since']} · started by "
                                              f"{(fd['triggering_deployment'] or {}).get('event_id')}")
             self.agent("first-divergence", "done",
-                       (f"{final['verdict']}: {fd['producer']} {fd['producer_version']} → {fd['consumer']} {fd['consumer_version']}"
-                        if fd else final["verdict"]),
+                       (f"Failing connection: {fd['producer']} {fd['producer_version']} → {fd['consumer']} {fd['consumer_version']}"
+                        if fd else {"CONVERGED": "All connections tested", "UNVALIDATED": "Untested connections, no failure found"}
+                        .get(final["verdict"], final["verdict"])),
                        duration_ms=int((time.perf_counter() - start) * 1000))
             self._pace()
 
@@ -251,7 +252,7 @@ class Investigation:
                 for check in packet["review"]["checks"]:
                     self.log("evidence-reviewer", f"{'PASS' if check['passed'] else 'FAIL'}  {check['label']}")
             self.agent("evidence-reviewer", "done",
-                       f"{packet['review']['verdict']} · {len(packet['evidence_items'])} evidence items · {packet['packet_id']}"
+                       f"{'CONFIRMED' if packet['review']['verdict'] == 'SUPPORTED' else 'NEEDS REVIEW'} · {len(packet['evidence_items'])} evidence items · {packet['packet_id']}"
                        if packet else "nothing to review",
                        duration_ms=int((time.perf_counter() - start) * 1000))
 

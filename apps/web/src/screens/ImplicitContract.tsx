@@ -11,17 +11,17 @@ function fallbackRecord(event: any) {
 }
 
 export default function ImplicitContract({ go }: { go: Go }) {
-  const { data, error } = useApi('/edges/mq-bridge--legacy-ledger?env=prod')
+  const { data, error } = useApi('/edges/mq-bridge--legacy-backend?env=prod')
   const [fx, setFx] = useState(0)
   const [showSpec, setShowSpec] = useState(false)
   if (error) return <div className="page"><ErrorBox error={error} /></div>
-  if (!data) return <div className="page"><Loading what="Reading deployed code and ICD spreadsheet" /></div>
+  if (!data) return <div className="page"><Loading what="Reading deployed code and the interface spreadsheet" /></div>
   const c = data.contract
   const ev = data.evaluation
   if (!c) {
     return (
       <div className="page">
-        <PageHead eyebrow="Understand · implicit contract" title="This boundary is validated" sub="Contract discovery only runs for boundaries without validation evidence." />
+        <PageHead eyebrow="What changed · message format" title="This connection is tested" sub="Meridian only works out the message format for connections that have never been tested." />
       </div>
     )
   }
@@ -38,19 +38,20 @@ export default function ImplicitContract({ go }: { go: Go }) {
 
   return (
     <div className="page">
-      <PageHead eyebrow="Understand · implicit contract discovery"
-        title={<>No formal contract found. <span className="grad-text">Reconstructed from code and documents.</span></>}
-        sub={<>{ev.producer} {ev.producer_version} @{ev.producer_commit} → {ev.consumer} {ev.consumer_version} @{ev.consumer_commit} · {ev.interface}. The contract proposes a probe; it never decides compatibility.</>}
-        actions={<><State s={c.prediction === 'INCOMPATIBLE' ? 'UNTESTED' : 'VERIFIED'} label={`STATIC PREDICTION: ${c.prediction}`} /><button className="btn primary" onClick={() => go('/probe')}>Prove it with a probe →</button></>} />
+      <PageHead eyebrow="What changed · message format"
+        title={<>No written spec for this connection. <span className="grad-text">Rebuilt from code and documents.</span></>}
+        sub={<>{ev.producer} {ev.producer_version} @{ev.producer_commit} → {ev.consumer} {ev.consumer_version} @{ev.consumer_commit} · {ev.interface}. This page predicts a mismatch; only the compatibility test decides pass or fail.</>}
+        actions={<><State s={c.prediction === 'INCOMPATIBLE' ? 'UNTESTED' : 'VERIFIED'} label={c.prediction === 'INCOMPATIBLE' ? 'PREDICTION: FORMATS DON’T MATCH' : 'PREDICTION: FORMATS MATCH'} /><button className="btn primary" onClick={() => go('/probe')}>Run the compatibility test →</button></>} />
 
-      <Card title="The record on LEDGER.IN, byte by byte" right={
+      <Card title={<>The message on {ev.interface.split('·').pop()?.trim() || 'the queue'}, byte by byte</>} right={
         <div className="tabs">{fixtures.map((f: any, i: number) => <button key={f.id} className={`tab ${fx === i ? 'on' : ''}`} onClick={() => setFx(i)}>{f.label}</button>)}</div>}>
         <ByteMap record={record} producer={c.producer_layout.fields} consumer={consumerBook.fields}
           producerLabel={`${ev.producer} ${ev.producer_version} · ${c.producer_layout.name}`}
           consumerLabel={`${ev.consumer} ${ev.consumer_version} · copybook ${consumerBook.name}`}
+          queueLabel={`message on ${ev.interface.split('·').pop()?.trim() || 'the queue'}`}
           consumerLength={consumerBook.length} consumerOk={c.prediction === 'COMPATIBLE'} />
         <div className="row wrap mt small">
-          <span className="pill">{observed ? 'actual record from the isolated probe' : 'record predicted from the layout (run the probe for the real bytes)'}</span>
+          <span className="pill">{observed ? 'real message captured by the compatibility test' : 'message predicted from the code (run the test to see the real bytes)'}</span>
           {observed?.assertions?.map((a: any) => (
             <span key={a.field} className={`pill ${a.passed ? 'c-ok' : 'c-fail'}`}>{a.field}: {a.expected} → {a.actual} {a.passed ? '✓' : '✕'}</span>
           ))}
@@ -58,9 +59,9 @@ export default function ImplicitContract({ go }: { go: Go }) {
       </Card>
 
       <div className="grid g-2-1 mt-l">
-        <Card title="Discovered constraints" right={<span className="small muted">{c.method}</span>}>
+        <Card title="Field by field" right={<span className="small muted">{c.method}</span>}>
           <table className="tbl">
-            <thead><tr><th>Field</th><th>Producer writes</th><th>Consumer reads</th><th></th><th>Risk</th></tr></thead>
+            <thead><tr><th>Field</th><th>Sender writes</th><th>Receiver reads</th><th></th><th>Risk</th></tr></thead>
             <tbody>
               {c.constraints.map((k: any) => (
                 <tr key={k.field} className={k.compatible ? '' : 'hl'}>
@@ -75,7 +76,7 @@ export default function ImplicitContract({ go }: { go: Go }) {
           </table>
           <div className="callout warn mt small"><span>⚠</span><div>{c.summary}</div></div>
         </Card>
-        <Card title="Consumer behaviour that hides the failure">
+        <Card title="Why no error is raised">
           {c.consumer_behaviour.map((b: any) => (
             <div key={b.id} className="glass mt-s" style={{ padding: 12 }}>
               <div className="row between"><span className="small strong">{b.id}</span><span className={`tag ${b.risk === 'high' ? 'c-fail' : b.risk === 'medium' ? 'c-warn' : ''}`}>{b.risk}</span></div>
@@ -87,15 +88,15 @@ export default function ImplicitContract({ go }: { go: Go }) {
       </div>
 
       <div className="grid g3 mt-l">
-        <Card title="Producer layout · deployed commit">
+        <Card title="Sender code · deployed commit">
           <CodeView component={ev.producer} commit={ev.producer_commit} path="src/ledger_record.py" highlight={linesFrom(producerSrc, 'ledger_record.py')} maxHeight={380} />
         </Card>
-        <Card title="Consumer copybook · deployed commit">
+        <Card title="Receiver code · deployed commit">
           <CodeView component={ev.consumer} commit={ev.consumer_commit} path="copybooks/LEDGREC.cpy" danger={linesFrom(consumerSrc, 'LEDGREC.cpy')} maxHeight={200} />
           <div className="mt-s" />
           <CodeView component={ev.consumer} commit={ev.consumer_commit} path="src/ldgpost.py" highlight={linesFrom(behaviourSrc, 'ldgpost.py')} maxHeight={260} />
         </Card>
-        <Card title="Interface control document · LEDG-ICD-007">
+        <Card title="Interface spreadsheet (interface-control.xlsx)">
           {Object.entries(icd).map(([sheet, rows]: any) => (
             <div key={sheet} className="mt-s">
               <div className="kicker">{sheet}</div>
@@ -110,12 +111,12 @@ export default function ImplicitContract({ go }: { go: Go }) {
         </Card>
       </div>
 
-      <Card className="mt-l" title="Generated probe specification" right={<button className="btn sm" onClick={() => setShowSpec(!showSpec)}>{showSpec ? 'Hide' : 'Show'} JSON</button>}>
+      <Card className="mt-l" title="Generated test plan" right={<button className="btn sm" onClick={() => setShowSpec(!showSpec)}>{showSpec ? 'Hide' : 'Show'} JSON</button>}>
         <div className="small t2">{c.probe_spec.assertions.join(' · ')}</div>
-        <div className="tiny muted mt-s">Fixtures: {c.probe_spec.fixture_source} · Isolation: {c.probe_spec.isolation}</div>
+        <div className="tiny muted mt-s">Test data: {c.probe_spec.fixture_source} · Sandbox: {c.probe_spec.isolation}</div>
         {showSpec && <pre className="block mt">{JSON.stringify(c.probe_spec, null, 2)}</pre>}
         {c.agent_findings?.length > 0 && (
-          <div className="callout hold mt small"><span>🤖</span><div>{c.agent_findings.length} finding(s) recorded by IBM Bob via MCP: {c.agent_findings.map((f: any) => f.summary).join(' · ')}</div></div>
+          <div className="callout hold mt small"><span>🤖</span><div>{c.agent_findings.length} note(s) from IBM Bob: {c.agent_findings.map((f: any) => f.summary).join(' · ')}</div></div>
         )}
       </Card>
     </div>

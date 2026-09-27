@@ -1,21 +1,27 @@
 import { post, useDataVersion } from '../api'
 import { Icon } from './ui'
 
+/**
+ * Page list. `group` is the sidebar heading; `stage` ties a page to a step in the top workflow bar.
+ * Stage ids are internal keys (RECONSTRUCT, UNDERSTAND, ...); the visible names live in App.tsx.
+ */
 export const ROUTES = [
-  { path: '/', label: 'Command center', icon: 'home', group: 'OVERVIEW', stage: null },
-  { path: '/investigate', label: 'Live investigation', icon: 'bot', group: 'OVERVIEW', stage: null },
-  { path: '/learn', label: 'Tutorials', icon: 'story', group: 'OVERVIEW', stage: null },
-  { path: '/journey', label: 'Release journey', icon: 'journey', group: 'RECONSTRUCT', stage: 'RECONSTRUCT' },
-  { path: '/composition', label: 'System composition', icon: 'matrix', group: 'RECONSTRUCT', stage: 'RECONSTRUCT' },
-  { path: '/drift', label: 'Drift relevance', icon: 'drift', group: 'UNDERSTAND', stage: 'UNDERSTAND' },
-  { path: '/flow', label: 'Dependency explorer', icon: 'graph', group: 'UNDERSTAND', stage: 'UNDERSTAND' },
-  { path: '/contract', label: 'Implicit contract', icon: 'contract', group: 'UNDERSTAND', stage: 'UNDERSTAND' },
-  { path: '/rehearse', label: 'Promotion rehearsal', icon: 'rehearse', group: 'REHEARSE', stage: 'REHEARSE' },
-  { path: '/probe', label: 'Probe console', icon: 'terminal', group: 'PROVE', stage: 'PROVE' },
-  { path: '/divergence', label: 'First divergence', icon: 'target', group: 'PROVE', stage: 'PROVE' },
-  { path: '/evidence', label: 'Evidence packet', icon: 'packet', group: 'PROVE', stage: 'PROVE' },
-  { path: '/remediate', label: 'Remediation', icon: 'wrench', group: 'REMEDIATE', stage: 'REMEDIATE' },
-  { path: '/bob', label: 'IBM Bob integration', icon: 'plug', group: 'IBM BOB', stage: null },
+  { path: '/', label: 'Home', icon: 'story', group: 'START HERE', stage: null },
+  { path: '/command', label: 'Dashboard', icon: 'home', group: 'START HERE', stage: null },
+  { path: '/investigate', label: 'Release check (live)', icon: 'bot', group: 'START HERE', stage: null },
+  { path: '/deck', label: 'Pitch deck (6 slides)', icon: 'terminal', group: 'START HERE', stage: null },
+  { path: '/learn', label: 'Video guides', icon: 'play', group: 'START HERE', stage: null },
+  { path: '/journey', label: 'Deployment timeline', icon: 'journey', group: '1 · WHAT’S RUNNING', stage: 'RECONSTRUCT' },
+  { path: '/composition', label: 'Versions by environment', icon: 'matrix', group: '1 · WHAT’S RUNNING', stage: 'RECONSTRUCT' },
+  { path: '/drift', label: 'What changed', icon: 'drift', group: '2 · WHAT CHANGED', stage: 'UNDERSTAND' },
+  { path: '/flow', label: 'Service map', icon: 'graph', group: '2 · WHAT CHANGED', stage: 'UNDERSTAND' },
+  { path: '/contract', label: 'Message format', icon: 'contract', group: '2 · WHAT CHANGED', stage: 'UNDERSTAND' },
+  { path: '/rehearse', label: 'Deployment preview', icon: 'rehearse', group: '3 · PREVIEW', stage: 'REHEARSE' },
+  { path: '/probe', label: 'Compatibility test', icon: 'terminal', group: '4 · TEST', stage: 'PROVE' },
+  { path: '/divergence', label: 'Failing connection', icon: 'target', group: '4 · TEST', stage: 'PROVE' },
+  { path: '/evidence', label: 'Evidence report', icon: 'packet', group: '4 · TEST', stage: 'PROVE' },
+  { path: '/remediate', label: 'Fix options', icon: 'wrench', group: '5 · FIX', stage: 'REMEDIATE' },
+  { path: '/bob', label: 'IBM Bob setup', icon: 'plug', group: 'SETUP', stage: null },
 ] as const
 
 export default function Nav({ route, go, overview }: { route: string; go: (p: string) => void; overview: any }) {
@@ -24,20 +30,33 @@ export default function Nav({ route, go, overview }: { route: string; go: (p: st
   const verdict = overview?.prod?.verdict
   const dotFor = (path: string) => {
     if (path === '/divergence' && verdict === 'DIVERGED') return 'var(--fail)'
-    if (path === '/' && verdict) return verdict === 'DIVERGED' ? 'var(--fail)' : verdict === 'UNVALIDATED' ? 'var(--warn)' : 'var(--ok)'
+    if (path === '/command' && verdict) return verdict === 'DIVERGED' ? 'var(--fail)' : verdict === 'UNVALIDATED' ? 'var(--warn)' : 'var(--ok)'
     return null
   }
   const reset = async () => {
-    if (!confirm('Reset demo evidence? Probe runs, investigations, rehearsals and the candidate branch are removed. Scenario data and Bob findings are kept.')) return
+    if (!confirm('Clear test results? Test runs, release checks, deployment previews and the draft fix branch are removed. Environment data and Bob findings are kept.')) return
     await post('/demo/reset')
     bump()
-    go('/')
+    go('/command')
   }
   return (
     <aside className="sidebar">
       {groups.map((g) => (
         <div className="nav-group" key={g}>
           <div className="nav-group-title">{g}</div>
+          {g === 'START HERE' && (
+            <a
+              href="/presentation.html"
+              target="_blank"
+              rel="noreferrer"
+              className="nav-item"
+              style={{ color: 'var(--accent)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}
+            >
+              <Icon name="story" />
+              <span>Pitch Deck (6-Slider)</span>
+              <span style={{ marginLeft: 'auto', fontSize: '9px', background: 'rgba(0, 212, 255, 0.2)', color: 'var(--accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>6-SLIDE</span>
+            </a>
+          )}
           {ROUTES.filter((r) => r.group === g).map((r) => {
             const dot = dotFor(r.path)
             return (
@@ -51,9 +70,9 @@ export default function Nav({ route, go, overview }: { route: string; go: (p: st
         </div>
       ))}
       <div className="sidebar-foot">
-        <div>Read-only against target environments. Probes execute in isolation.</div>
-        <button className="btn ghost sm mt-s" onClick={reset}><Icon name="reset" size={13} /> Reset demo evidence</button>
-        <div className="tiny dim mt-s">Press <kbd>S</kbd> for story mode · ← → to step</div>
+        <div>Meridian only reads from your environments. Tests run in an isolated sandbox.</div>
+        <button className="btn ghost sm mt-s" onClick={reset}><Icon name="reset" size={13} /> Clear test results</button>
+        <div className="tiny dim mt-s">Press <kbd>S</kbd> for a guided tour · ← → to step</div>
       </div>
     </aside>
   )

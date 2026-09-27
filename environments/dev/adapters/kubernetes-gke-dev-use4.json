@@ -24,7 +24,7 @@
         },
         "annotations": {
           "deployment.kubernetes.io/revision": "44",
-          "org.opencontainers.image.revision": "470f5dd",
+          "org.opencontainers.image.revision": "7fa8e27",
           "org.opencontainers.image.version": "2.3"
         }
       },
@@ -38,7 +38,7 @@
             "containers": [
               {
                 "name": "web-checkout",
-                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/web-checkout:2.3@sha256:42b3dc2973cec7660bc5ecab7f8deea82ab33902d1879e5bea2b85f6d6d2d9c7",
+                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/web-checkout:2.3@sha256:a0604e091011e837d12251b6a20e090167ad10afb504ea52908687d180efc07a",
                 "resources": {
                   "requests": {
                     "cpu": "250m",
@@ -111,7 +111,7 @@
         },
         "annotations": {
           "deployment.kubernetes.io/revision": "50",
-          "org.opencontainers.image.revision": "a736b1b",
+          "org.opencontainers.image.revision": "1b6c5f5",
           "org.opencontainers.image.version": "7.2"
         }
       },
@@ -125,7 +125,7 @@
             "containers": [
               {
                 "name": "billing-service",
-                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/billing-service:7.2@sha256:4e5481ba7ef6cd02005fe02e8f18e80cea41da00494c859ad470c2d8e9ac7c9f",
+                "image": "us-east4-docker.pkg.dev/acme-storefront/apps/billing-service:7.2@sha256:755fb6d581f1abfdced30d796b1048aad354afb0c34a4e3be12297981334f4cf",
                 "resources": {
                   "requests": {
                     "cpu": "250m",

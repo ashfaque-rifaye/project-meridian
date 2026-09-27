@@ -109,14 +109,14 @@ def evaluate_edge(edge: DependencyEdge, p: Member | None, c: Member | None, envi
 
     probe, contract = _probe_for(edge, p, c, run_probes)
     if probe is None:
-        state, suffix = EdgeState.UNTESTED, " Awaiting an isolated compatibility probe."
+        state, suffix = EdgeState.UNTESTED, " Waiting for a compatibility test in the sandbox."
     elif probe["result"] == "FAIL":
-        state, suffix = EdgeState.FAILED, (" Isolated probe FAILED"
-                                           + (" silently (infrastructure green, business data wrong)." if probe["silent_failure"] else "."))
+        state, suffix = EdgeState.FAILED, (" The sandbox compatibility test FAILED"
+                                           + (" without raising an error (systems green, saved data wrong)." if probe["silent_failure"] else "."))
     elif probe["result"] == "PASS":
-        state, suffix = EdgeState.VERIFIED_BY_PROBE, " Isolated probe passed; the pair is still unvalidated in any environment."
+        state, suffix = EdgeState.VERIFIED_BY_PROBE, " The sandbox test passed, but this pair has still not been tested in any environment."
     else:
-        state, suffix = EdgeState.INCONCLUSIVE, " Probe could not establish compatibility."
+        state, suffix = EdgeState.INCONCLUSIVE, " The test could not tell whether the versions are compatible."
     probe_summary = None
     if probe:
         probe_summary = {k: probe[k] for k in ("run_id", "probe_id", "evidence_id", "result", "silent_failure",

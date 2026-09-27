@@ -6,7 +6,7 @@
   "database": "LEDGDB",
   "host": "db2-prod-ldg01.dc2.acme.internal",
   "schema": "LEDGER",
-  "migrations_git_commit": "855d31b",
+  "migrations_git_commit": "cb1ffd4",
   "flyway_schema_history": [
     {
       "installed_rank": 13,

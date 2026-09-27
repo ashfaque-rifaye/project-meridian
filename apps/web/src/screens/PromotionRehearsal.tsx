@@ -27,13 +27,13 @@ export default function PromotionRehearsal({ go }: { go: Go }) {
   return (
     <div className="page">
       <PageBanner video="meridian-pendulums">
-        <PageHead eyebrow="Rehearse · counterfactual promotion" title={<>See what this promotion creates <span className="grad-text">before you create it</span></>}
-          sub="Current PROD + proposed change = predicted composition. Validation memory first, then isolated probes for every unvalidated boundary. Nothing is deployed." />
+        <PageHead eyebrow="Preview · deployment preview" title={<>See what a deployment changes <span className="grad-text">before you deploy it</span></>}
+          sub="Current production plus your proposed change gives the versions you would end up with. Meridian checks the test history first, then runs a sandbox test for every untested connection. Nothing is deployed." />
       </PageBanner>
 
       <div className="grid g-1-2">
         <div className="stack">
-          <Card title="Scenarios">
+          <Card title="Common deployments">
             {!presets ? <Loading /> : presets.presets.map((p: any) => (
               <button key={p.id} className="glass" style={{ width: '100%', textAlign: 'left', padding: 12, marginBottom: 8, cursor: 'pointer', color: 'inherit' }}
                 onClick={() => { setChanges(p.changes); setTitle(p.title); rehearse(p.changes, p.title) }}>
@@ -42,7 +42,7 @@ export default function PromotionRehearsal({ go }: { go: Go }) {
               </button>
             ))}
           </Card>
-          <Card title="Custom promotion">
+          <Card title="Custom deployment">
             {changes.map((c, i) => (
               <div key={i} className="row" style={{ marginBottom: 8 }}>
                 <select className="select" value={c.component} onChange={(e) => setChanges(changes.map((x, j) => j === i ? { component: e.target.value, version: presets.versions[e.target.value].slice(-1)[0] } : x))}>
@@ -55,32 +55,32 @@ export default function PromotionRehearsal({ go }: { go: Go }) {
               </div>
             ))}
             <div className="row">
-              <button className="btn sm" onClick={() => setChanges([...changes, { component: 'legacy-ledger', version: '7.0' }])}>+ component</button>
+              <button className="btn sm" onClick={() => setChanges([...changes, { component: 'legacy-backend', version: '7.0' }])}>+ service</button>
               <span className="spacer" />
-              <button className="btn primary" onClick={() => rehearse(changes, 'Custom promotion')} disabled={busy || !changes.length}>
-                {busy ? <span className="spinner" style={{ borderTopColor: '#fff' }} /> : <Icon name="rehearse" size={14} />} Rehearse
+              <button className="btn primary" onClick={() => rehearse(changes, 'Custom deployment')} disabled={busy || !changes.length}>
+                {busy ? <span className="spinner" style={{ borderTopColor: '#fff' }} /> : <Icon name="rehearse" size={14} />} Preview deployment
               </button>
             </div>
-            <div className="tiny muted mt-s">Target: PROD · read-only · probes run in .meridian/sandbox</div>
+            <div className="tiny muted mt-s">Target: PROD · read-only · tests run in an isolated sandbox</div>
           </Card>
         </div>
 
-        <Card title={result ? result.title || 'Rehearsal' : 'Result'} right={result && <State s={result.verdict} lg />}>
-          {busy && <Loading what="Predicting composition and probing unvalidated boundaries" />}
-          {!busy && !result && <div className="empty"><div className="big-num grad-text">Pick a scenario</div><p className="mt-s">Try “Promote mq-bridge 3.1 to PROD”: the exact move that happened on Friday 11:42.</p></div>}
+        <Card title={result ? result.title || 'Preview' : 'Result'} right={result && <State s={result.verdict} lg />}>
+          {busy && <Loading what="Working out the new versions and testing untested connections" />}
+          {!busy && !result && <div className="empty"><div className="big-num grad-text">Pick a deployment</div><p className="mt-s">Try “Promote mq-bridge 3.1 to PROD”: the exact deployment that happened on Friday at 11:42.</p></div>}
           {result && (
             <div className="rise">
-              <div className="kicker">1 · current PROD</div>
+              <div className="kicker">1 · production today</div>
               <div className="strip mt-s">{Object.entries(result.current_composition).map(([k, v]: any) => <div key={k} className="chip"><div className="chip-name">{k}</div><div className="chip-ver">{v}</div></div>)}</div>
               <div className="kicker mt">2 · proposed change</div>
               <div className="row wrap mt-s">{result.changes.map((c: any) => <span key={c.component} className="pill c-accent">{c.component} {c.from_version} → {c.to_version} <span className="dim mono">@{c.commit}</span></span>)}</div>
-              <div className="kicker mt">3 · predicted composition</div>
+              <div className="kicker mt">3 · versions after the deployment</div>
               <div className="strip mt-s">{Object.entries(result.predicted_composition).map(([k, v]: any) => {
                 const changed = result.changes.some((c: any) => c.component === k)
                 const failing = result.edges.some((e: any) => e.state === 'FAILED' && (e.producer === k || e.consumer === k))
                 return <div key={k} className={`chip ${failing ? 'bad' : changed ? 'changed' : ''}`}><div className="chip-name">{k}</div><div className="chip-ver">{v}</div></div>
               })}</div>
-              <div className="kicker mt">4 · validation check + probes</div>
+              <div className="kicker mt">4 · test history + sandbox tests</div>
               <table className="tbl mt-s">
                 <tbody>{result.edges.map((e: any) => (
                   <tr key={e.edge_id} className={e.state === 'FAILED' ? 'hl' : ''}>
@@ -92,9 +92,9 @@ export default function PromotionRehearsal({ go }: { go: Go }) {
               </table>
               <div className={`callout mt ${result.verdict === 'DIVERGED' ? 'fail' : result.verdict === 'CONVERGED' ? 'ok' : 'warn'}`}>
                 <span>{result.verdict === 'DIVERGED' ? '✕' : result.verdict === 'CONVERGED' ? '✓' : '⚠'}</span>
-                <div><div className="strong">5 · result</div><div className="small">{result.headline}</div><div className="tiny muted mt-s">deployed anything: {String(result.deployed_anything)} · rehearsal {result.rehearsal_id}</div></div>
+                <div><div className="strong">5 · result</div><div className="small">{result.headline}</div><div className="tiny muted mt-s">{result.deployed_anything ? 'deployed' : 'nothing was deployed'} · preview {result.rehearsal_id}</div></div>
               </div>
-              {result.verdict !== 'CONVERGED' && <button className="btn mt" onClick={() => go('/remediate')}>Find the smallest safe change →</button>}
+              {result.verdict !== 'CONVERGED' && <button className="btn mt" onClick={() => go('/remediate')}>See fix options →</button>}
             </div>
           )}
         </Card>

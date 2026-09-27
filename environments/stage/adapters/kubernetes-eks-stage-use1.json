@@ -24,7 +24,7 @@
         },
         "annotations": {
           "deployment.kubernetes.io/revision": "56",
-          "org.opencontainers.image.revision": "e99581b",
+          "org.opencontainers.image.revision": "7778ab1",
           "org.opencontainers.image.version": "4.8"
         }
       },
@@ -38,7 +38,7 @@
             "containers": [
               {
                 "name": "order-api",
-                "image": "441122334455.dkr.ecr.us-east-1.amazonaws.com/orders/order-api:4.8@sha256:61a3b7162b490c33fca9292f2f452de0016675419997c9e911058661d98c0423",
+                "image": "441122334455.dkr.ecr.us-east-1.amazonaws.com/orders/order-api:4.8@sha256:684390e8f585f78acb45686cbdd9c1bbb2cd440c8edfb0e49f3949f2165919b9",
                 "resources": {
                   "requests": {
                     "cpu": "500m",

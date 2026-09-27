@@ -24,7 +24,7 @@
         },
         "annotations": {
           "deployment.kubernetes.io/revision": "42",
-          "org.opencontainers.image.revision": "381651e",
+          "org.opencontainers.image.revision": "94f84b4",
           "org.opencontainers.image.version": "8.4"
         }
       },
@@ -38,7 +38,7 @@
             "containers": [
               {
                 "name": "payment-service",
-                "image": "acmepayments.azurecr.io/payments/payment-service:8.4@sha256:4e4ec7d45bffa9a231f994c94fceba5479c20573402298b6ba74e17f0d95650c",
+                "image": "acmepayments.azurecr.io/payments/payment-service:8.4@sha256:e081696b1fa0da3c23b1e2304a57778c45f3152928148ec8637acd4953f647f2",
                 "resources": {
                   "requests": {
                     "cpu": "250m",

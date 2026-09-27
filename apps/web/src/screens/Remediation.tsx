@@ -35,13 +35,13 @@ export default function Remediation({ go }: { go: Go }) {
   return (
     <div className="page">
       <PageBanner video="remediation-bridge">
-        <PageHead eyebrow="Remediate · smallest safe change" title={<>Every option rehearsed. <span className="grad-text">Nothing deployed.</span></>}
-          sub="Each strategy is evaluated like a real promotion: validation memory, then isolated regression probes. The human owns the release decision."
-          actions={<button className="btn primary lg" onClick={openInBob}><Icon name="bot" /> Open in Bob</button>} />
+        <PageHead eyebrow="Fix · fix options" title={<>Every option previewed. <span className="grad-text">Nothing deployed.</span></>}
+          sub="Each fix is checked like a real deployment: test history first, then a sandbox test. A person makes the final release decision."
+          actions={<button className="btn primary lg" onClick={openInBob}><Icon name="bot" /> Send to IBM Bob</button>} />
       </PageBanner>
 
       <div className="steps" style={{ marginBottom: 18 }}>
-        {['FAILED', 'BOB FIX', 'REBUILD', 'PROBE', 'PASS'].map((s, i) => (
+        {['FAILED', 'BOB DRAFTS FIX', 'REBUILD', 'RETEST', 'PASS'].map((s, i) => (
           <div key={s} className={`stepx ${stepState(i)}`}>{i === 0 ? '✕' : stepState(i) === 'ok' ? '✓' : '○'} {s}</div>
         ))}
       </div>
@@ -56,13 +56,13 @@ export default function Remediation({ go }: { go: Go }) {
                 <div className="tiny muted mt-s">Owner: {s.owner}</div>
                 <div className="callout mt small"><span>⚖</span><div>{s.tradeoff}</div></div>
                 <button className="btn primary mt" onClick={() => run(s.id)} disabled={!!busy}>
-                  {busy === s.id ? <span className="spinner" style={{ borderTopColor: '#fff' }} /> : <Icon name="rehearse" size={14} />} {s.id === 'bridge-compat-mode' ? 'Draft candidate + regression probe' : 'Rehearse'}
+                  {busy === s.id ? <span className="spinner" style={{ borderTopColor: '#fff' }} /> : <Icon name="rehearse" size={14} />} {s.id === 'bridge-compat-mode' ? 'Draft fix and retest' : 'Preview this option'}
                 </button>
                 {r && (
                   <div className="mt rise">
                     <div className="small strong">{r.rehearsal.headline}</div>
                     <table className="tbl mt-s"><tbody>
-                      {r.rehearsal.edges.filter((e: any) => e.state !== 'VERIFIED' || e.edge_id === 'mq-bridge--legacy-ledger').map((e: any) => (
+                      {r.rehearsal.edges.filter((e: any) => e.state !== 'VERIFIED' || e.edge_id === 'mq-bridge--legacy-backend').map((e: any) => (
                         <tr key={e.edge_id}><td className="small">{e.producer} {e.producer_version} → {e.consumer} {e.consumer_version}</td><td><State s={e.state} /></td></tr>
                       ))}
                     </tbody></table>
@@ -76,7 +76,7 @@ export default function Remediation({ go }: { go: Go }) {
 
       {b?.candidate && (
         <div className="grid g-2-1 mt-l rise">
-          <Card title={<>Candidate · mq-bridge {b.candidate.label}</>} right={<span className={`tag ${b.candidate.authored_by_bob ? 'c-accent' : ''}`}>{b.candidate.author}</span>}>
+          <Card title={<>Draft fix · mq-bridge {b.candidate.label}</>} right={<span className={`tag ${b.candidate.authored_by_bob ? 'c-accent' : ''}`}>{b.candidate.author}</span>}>
             <dl className="kv small">
               <dt>branch</dt><dd className="mono">{b.candidate.branch}</dd>
               <dt>commit</dt><dd className="mono">{b.candidate.base_commit} → {b.candidate.commit}</dd>
@@ -85,31 +85,31 @@ export default function Remediation({ go }: { go: Go }) {
             </dl>
             <div className="mt"><DiffView diff={b.candidate.diff} /></div>
           </Card>
-          <Card title="Regression probe · against legacy-ledger 6.9" right={probe && <State s={probe.result} lg />} className="card-video">
+          <Card title="Retest · against legacy-backend 6.9" right={probe && <State s={probe.result} lg />} className="card-video">
             {probe?.result === 'PASS' && <AmbientVideo name="convergence-snap" className="card-bg" />}
             {probe ? (
               <>
                 {probe.fixtures.map((f: any) => (
                   <div key={f.fixture} className="glass" style={{ padding: 10, marginBottom: 8 }}>
                     <div className="row between"><span className="small strong">{f.label}</span><State s={f.outcome === 'HELD' ? 'HELD' : f.passed ? 'PASS' : 'FAIL'} /></div>
-                    <div className="tiny muted">{f.outcome === 'HELD' ? f.note : `posted exactly: ${f.assertions?.map((a: any) => a.actual).join(' · ')}`}</div>
+                    <div className="tiny muted">{f.outcome === 'HELD' ? f.note : `saved exactly: ${f.assertions?.map((a: any) => a.actual).join(' · ')}`}</div>
                   </div>
                 ))}
-                <div className="callout ok small mt"><span>✓</span><div>No delivered record is corrupted. Records that LEDGREC rev 6 cannot represent wait on LEDGER.HOLD for CR-4471.</div></div>
-                <button className="btn mt" onClick={() => go('/probe')}>Open in probe console</button>
+                <div className="callout ok small mt"><span>✓</span><div>No delivered record is damaged. Records the old format can’t store wait on the BACKEND.HOLD queue until CR-4471 is deployed.</div></div>
+                <button className="btn mt" onClick={() => go('/probe')}>Open in compatibility test</button>
               </>
-            ) : <Loading what="Waiting for the regression probe" />}
+            ) : <Loading what="Waiting for the retest" />}
           </Card>
         </div>
       )}
 
-      <Card className="mt-l" title="Hand the evidence to IBM Bob">
+      <Card className="mt-l" title="How the IBM Bob hand-off works">
         <div className="small t2">
-          <b>Open in Bob</b> writes the evidence packet and a task for the <span className="mono">meridian-remediator</span> custom mode. Bob confirms the layouts with the <span className="mono">implicit-contract-discovery</span> skill, writes a candidate to <span className="mono">{candidate?.bob_candidate_path}</span>, and calls the MCP tool <span className="mono">verify_remediation</span>. Current candidate source: <b>{candidate?.author}</b>.
+          <b>Send to IBM Bob</b> saves the evidence report and a task for Bob’s fix mode (<span className="mono">meridian-remediator</span>). Bob checks the message format, writes a draft fix to <span className="mono">{candidate?.bob_candidate_path}</span>, and asks Meridian to retest it with the <span className="mono">verify_remediation</span> tool. Current draft author: <b>{candidate?.author}</b>.
         </div>
       </Card>
 
-      <Modal open={!!handoff} onClose={() => setHandoff(null)} title="Open in IBM Bob · meridian-remediator">
+      <Modal open={!!handoff} onClose={() => setHandoff(null)} title="Send to IBM Bob · fix mode">
         {handoff && (<>
           <p className="small t2">Written to <span className="mono">{handoff.prompt_file}</span> and <span className="mono">{handoff.evidence_file}</span>.</p>
           <pre className="block mt">{handoff.prompt}</pre>

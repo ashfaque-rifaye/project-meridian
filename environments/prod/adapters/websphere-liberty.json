@@ -28,7 +28,7 @@
           "manifest": {
             "Implementation-Title": "LDGPOST",
             "Implementation-Version": "6.9",
-            "Implementation-Build": "2f9ab73",
+            "Implementation-Build": "997c88b",
             "Implementation-Vendor": "Acme Core Ledger"
           },
           "mq": {

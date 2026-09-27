@@ -54,7 +54,7 @@ export default function Timeline({ data, onSegment, selected }: { data: any; onS
               return (
                 <rect key={j} className="seg" x={x1 + 1} y={y + 10} width={x2 - x1 - 2} height={26} rx={4}
                   fill={fill} stroke={stroke} strokeWidth={sel ? 2 : 1} onClick={() => onSegment?.(seg)}>
-                  <title>{`${lane.environment.toUpperCase()} ${fmtTime(seg.start)} → ${seg.end ? fmtTime(seg.end) : 'now'}\n${seg.validated ? 'Composition validated' : 'Unvalidated: ' + seg.unvalidated.map((u: any) => `${u.edge_id} (${u.pair.join(' → ')})`).join(', ')}`}</title>
+                  <title>{`${lane.environment.toUpperCase()} ${fmtTime(seg.start)} → ${seg.end ? fmtTime(seg.end) : 'now'}\n${seg.validated ? 'Versions tested' : 'Not tested: ' + seg.unvalidated.map((u: any) => `${u.edge_id.replace('--', ' → ')} (${u.pair.join(' → ')})`).join(', ')}`}</title>
                 </rect>
               )
             })}
@@ -96,13 +96,13 @@ export default function Timeline({ data, onSegment, selected }: { data: any; onS
         return (
           <g>
             <line x1={fx} x2={fx} y1={TOP - 22} y2={laneY(i) + 40} stroke="var(--fail)" strokeWidth={1.5} strokeDasharray="4 3" />
-            <text x={fx + 6} y={TOP - 24} style={{ fill: 'var(--fail)', fontWeight: 600 }}>{fmtTime(fdd.unvalidated_since, { date: false })} untested composition created</text>
+            <text x={fx + 6} y={TOP - 24} style={{ fill: 'var(--fail)', fontWeight: 600 }}>{fmtTime(fdd.unvalidated_since, { date: false })} untested versions go live</text>
           </g>
         )
       })()}
 
       <line x1={x(now)} x2={x(now)} y1={TOP - 22} y2={H - 26} stroke="var(--accent)" strokeWidth={1.5} />
-      <text x={x(now) + 5} y={H - 28} style={{ fill: 'var(--accent)', fontWeight: 600 }}>scenario now</text>
+      <text x={x(now) + 5} y={H - 28} style={{ fill: 'var(--accent)', fontWeight: 600 }}>data as of</text>
     </svg>
   )
 }

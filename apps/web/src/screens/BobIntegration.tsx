@@ -27,20 +27,20 @@ export default function BobIntegration({ go }: { go: Go }) {
   return (
     <div className="page">
       <PageBanner video="bob-core">
-        <PageHead eyebrow="IBM Bob 2.0 integration" title={<>Meridian runs <span className="grad-text">inside Bob</span></>}
-          sub="A project-local plugin: AGENTS.md context, four custom modes, five skills, a 22-tool MCP server and lifecycle hooks that make the investigator physically unable to touch an environment." />
+        <PageHead eyebrow="IBM Bob setup" title={<>Meridian runs <span className="grad-text">inside IBM Bob</span></>}
+          sub="A plugin in this project: AGENTS.md context, four Bob modes, five skills, a 22-tool MCP server and hooks that stop Bob from changing any environment." />
       </PageBanner>
 
       <div className="grid g4">
-        {[['Custom modes', data.modes.length], ['Skills', data.skills.length], ['MCP tools', data.tools.length], ['Hooks', Object.keys(data.hooks).length]].map(([k, v]) => (
+        {[['Bob modes', data.modes.length], ['Skills', data.skills.length], ['MCP tools', data.tools.length], ['Hooks', Object.keys(data.hooks).length]].map(([k, v]) => (
           <Card key={k as string}><div className="kicker">{k}</div><div className="big-num grad-text mt-s">{v}</div></Card>
         ))}
       </div>
 
       <div className="grid g2 mt-l">
-        <Card title="Live guardrail · PreToolUse hook" className="card-video">
+        <Card title="Try the safety hook" className="card-video">
           <AmbientVideo name="shield-guard" className="card-bg" />
-          <p className="small t2">Runs the real <span className="mono">.bob/hooks/guard.py</span> exactly as Bob does before <span className="mono">execute_command</span>. Exit code 2 blocks the tool call.</p>
+          <p className="small t2">Runs the real <span className="mono">.bob/hooks/guard.py</span>, the same check Bob runs before every shell command. Commands that would change an environment are blocked (exit code 2).</p>
           <div className="row mt">
             <input className="input" value={cmd} onChange={(e) => setCmd(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && test()} />
             <button className="btn primary" onClick={() => test()}>Test</button>
@@ -57,7 +57,7 @@ export default function BobIntegration({ go }: { go: Go }) {
             </div>
           )}
         </Card>
-        <Card title="Custom modes · .bob/custom_modes.yaml">
+        <Card title="Bob modes · .bob/custom_modes.yaml">
           {data.modes.map((m: any) => (
             <div key={m.slug} className="glass" style={{ padding: 12, marginBottom: 8 }}>
               <div className="row between"><span className="strong">{m.name}</span><span className="tag">{m.slug}</span></div>
@@ -77,7 +77,7 @@ export default function BobIntegration({ go }: { go: Go }) {
             </div>
           ))}
         </Card>
-        <Card title="MCP server · meridian (stdio)" right={<span className="small muted mono">{data.mcp?.mcpServers?.meridian?.args?.[0]}</span>}>
+        <Card title="Meridian tools for Bob (MCP server)" right={<span className="small muted mono">{data.mcp?.mcpServers?.meridian?.args?.[0]}</span>}>
           <div style={{ maxHeight: 420, overflow: 'auto' }}>
             <table className="tbl">
               <thead><tr><th>Tool</th><th>Access</th></tr></thead>
@@ -90,9 +90,9 @@ export default function BobIntegration({ go }: { go: Go }) {
         </Card>
       </div>
 
-      <Card className="mt-l" title="Bob activity · hook log and agent findings" right={<button className="btn sm" onClick={reload}>Refresh</button>}>
+      <Card className="mt-l" title="Bob activity · tool calls and notes" right={<button className="btn sm" onClick={reload}>Refresh</button>}>
         {!activity?.hook_log?.length && !activity?.agent_findings?.length ? (
-          <div className="small muted">No Bob activity recorded yet. Run the investigation from Bob in the <span className="mono">meridian-investigator</span> mode; every tool call is logged here by the PostToolUse hook.</div>
+          <div className="small muted">No Bob activity yet. Run a release check from Bob in the <span className="mono">meridian-investigator</span> mode, and every tool call will be logged here.</div>
         ) : (
           <div style={{ maxHeight: 360, overflow: 'auto' }}>
             {activity.agent_findings.map((f: any) => (

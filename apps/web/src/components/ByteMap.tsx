@@ -7,12 +7,13 @@ function fieldAt(fields: Field[], pos: number) {
   return fields.find((f) => pos >= f.offset && pos < f.offset + f.width)?.name
 }
 
-export default function ByteMap({ record, producer, consumer, producerLabel, consumerLabel, consumerLength, consumerOk }: {
+export default function ByteMap({ record, producer, consumer, producerLabel, consumerLabel, queueLabel = 'message', consumerLength, consumerOk }: {
   record: string
   producer: Field[]
   consumer: Field[]
   producerLabel: string
   consumerLabel: string
+  queueLabel?: string
   consumerLength: number
   consumerOk?: boolean
 }) {
@@ -33,9 +34,9 @@ export default function ByteMap({ record, producer, consumer, producerLabel, con
 
   return (
     <div className="bytemap">
-      <div className="bm-row"><div className="bm-side"><span><b style={{ color: 'var(--text)' }}>Producer writes</b><br />{producerLabel}</span></div>{bar(producer)}</div>
+      <div className="bm-row"><div className="bm-side"><span><b style={{ color: 'var(--text)' }}>Sender writes</b><br />{producerLabel}</span></div>{bar(producer)}</div>
       <div className="bm-row" style={{ marginTop: 18 }}>
-        <div className="bm-side"><span>record on LEDGER.IN<br /><span className="mono">{bytes.length} bytes</span></span></div>
+        <div className="bm-side"><span>{queueLabel}<br /><span className="mono">{bytes.length} bytes</span></span></div>
         {bytes.map((ch, i) => {
           const pos = i + 1
           const p = fieldAt(producer, pos)
@@ -44,14 +45,14 @@ export default function ByteMap({ record, producer, consumer, producerLabel, con
           const mis = !ignored && p !== c && !consumerOk
           return (
             <div key={i} className={`bm-byte ${ch === ' ' ? 'space' : ''} ${mis ? 'mis' : ''} ${ignored ? 'ignored' : ''}`}
-              title={`byte ${pos} · producer: ${p ?? '—'} · consumer: ${ignored ? 'ignored' : c ?? '—'}`}>
+              title={`byte ${pos} · sender: ${p ?? '—'} · receiver: ${ignored ? 'ignored' : c ?? '—'}`}>
               {(pos === 1 || pos % 5 === 0) && <small>{pos}</small>}
               {ch === ' ' ? '·' : ch}
             </div>
           )
         })}
       </div>
-      <div className="bm-row"><div className="bm-side"><span><b style={{ color: 'var(--text)' }}>Consumer reads</b><br />{consumerLabel}</span></div>{bar(consumer, extra)}</div>
+      <div className="bm-row"><div className="bm-side"><span><b style={{ color: 'var(--text)' }}>Receiver reads</b><br />{consumerLabel}</span></div>{bar(consumer, extra)}</div>
     </div>
   )
 }

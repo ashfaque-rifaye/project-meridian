@@ -1,16 +1,16 @@
 {
-  "probe_id": "probe-mq-bridge-3.1.1-compat-legacy-ledger-6.9-95f7872a",
+  "probe_id": "probe-mq-bridge-3.1.1-compat-legacy-ledger-6.9-a54ba561",
   "spec": {
-    "probe_id": "probe-mq-bridge-3.1.1-compat-legacy-ledger-6.9-95f7872a",
+    "probe_id": "probe-mq-bridge-3.1.1-compat-legacy-ledger-6.9-a54ba561",
     "edge_id": "mq-bridge--legacy-ledger",
     "interface": "IBM MQ \u00b7 LEDGER.IN",
     "probe_type": "fixed-width-record",
-    "contract_id": "contract-9e0df79d09",
+    "contract_id": "contract-00a8a542cf",
     "producer": {
       "component": "mq-bridge",
       "version": "3.1.1-compat",
       "label": "3.1.1-compat",
-      "commit": "e4d6df8",
+      "commit": "e10a676",
       "entrypoint": "src/ledger_record.py:to_ledger_record",
       "config": {
         "ledger.recordLayout": "v6-compat"
@@ -19,7 +19,7 @@
     "consumer": {
       "component": "legacy-ledger",
       "version": "6.9",
-      "commit": "2f9ab73",
+      "commit": "997c88b",
       "entrypoint": "src/ldgpost.py:post"
     },
     "fixture_source": "Stage validation corpus (environments/validation-runs.json)",
@@ -79,10 +79,10 @@
     "isolation": "git archive of each exact commit into a temporary sandbox; python -I subprocess; no environment credentials; no network endpoints configured"
   },
   "latest_run": {
-    "run_id": "run-20260926165623411-95f7872a",
+    "run_id": "run-20260927134334799-a54ba561",
     "result": "PASS",
     "silent_failure": false,
-    "finished_at": "2026-09-26T16:56:23Z",
-    "evidence_id": "ev-run-20260926165623411-95f7872a"
+    "finished_at": "2026-09-27T13:43:35Z",
+    "evidence_id": "ev-run-20260927134334799-a54ba561"
   }
 }

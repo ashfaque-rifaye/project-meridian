@@ -1,8 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { fromApi, humanize, toApi } from './labels'
 
-export async function api<T = any>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`/api${path}`, {
+/** Unmodified API response, using the engine's real identifiers (for exports and Bob hand-off). */
+export async function apiRaw<T = any>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`/api${toApi(path)}`, {
     ...init,
+    body: typeof init?.body === 'string' ? toApi(init.body) : init?.body,
     headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) },
   })
   if (!res.ok) {
@@ -13,9 +16,14 @@ export async function api<T = any>(path: string, init?: RequestInit): Promise<T>
     } catch {
       /* ignore */
     }
-    throw new Error(detail)
+    throw new Error(humanize(String(detail)))
   }
   return res.json()
+}
+
+/** API response with display names applied (see labels.ts). */
+export async function api<T = any>(path: string, init?: RequestInit): Promise<T> {
+  return fromApi(await apiRaw<T>(path, init))
 }
 
 export const post = <T = any>(path: string, body?: unknown) =>

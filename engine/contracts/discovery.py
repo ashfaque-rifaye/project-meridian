@@ -200,8 +200,8 @@ def _effective_consumer_layout(consumer: dict, record_length: int) -> tuple[dict
     primary = next((c for c in copybooks if c["name"] == "LEDGREC"), copybooks[0])
     if primary["length"] == record_length:
         return primary, f"Record length matches {primary['name']}."
-    return primary, (f"Consumer slices with {primary['name']} ({primary['length']} bytes) and ignores the "
-                     f"remaining {record_length - primary['length']} byte(s); no error is raised.")
+    return primary, (f"The receiver reads the message with {primary['name']} ({primary['length']} bytes) and ignores the "
+                     f"last {record_length - primary['length']} byte(s) without raising an error.")
 
 
 def compare(producer_layout: dict, consumer: dict) -> tuple[list[dict], str, str]:
@@ -214,7 +214,7 @@ def compare(producer_layout: dict, consumer: dict) -> tuple[list[dict], str, str
     for pf in producer_layout["fields"]:
         cf = by_name.get(pf["name"])
         if cf is None:
-            detail = "Consumer has no such field"
+            detail = "The receiver has no such field"
             if pf["name"] == "currency_code" and default_currency:
                 detail += f"; {default_currency['value']}"
             constraints.append({
@@ -227,12 +227,12 @@ def compare(producer_layout: dict, consumer: dict) -> tuple[list[dict], str, str
         if same:
             risk, detail = "None.", "Offsets and widths match."
         elif pf["offset"] == cf["offset"] and cf["width"] < pf["width"]:
-            risk = "Value is silently truncated."
-            detail = f"Consumer reads {cf['width']} of the {pf['width']} bytes the producer writes."
+            risk = "Value is silently cut off."
+            detail = f"The receiver reads {cf['width']} of the {pf['width']} bytes the sender writes."
         else:
-            risk = "Field boundaries are misaligned; the consumer reads bytes that belong to other fields."
-            detail = (f"Producer bytes {pf['offset']}-{pf['offset'] + pf['width'] - 1}; "
-                      f"consumer reads {cf['offset']}-{cf['offset'] + cf['width'] - 1}.")
+            risk = "Fields are out of line; the receiver reads bytes that belong to other fields."
+            detail = (f"Sender writes bytes {pf['offset']}-{pf['offset'] + pf['width'] - 1}; "
+                      f"receiver reads {cf['offset']}-{cf['offset'] + cf['width'] - 1}.")
         constraints.append({
             "field": pf["name"], "producer": f"{pf['width']} bytes at {pf['offset']}",
             "consumer": f"{cf['width']} bytes at {cf['offset']} ({cf.get('pic', '')})".strip(),
@@ -312,8 +312,8 @@ def discover(edge: DependencyEdge, producer_version: str, producer_commit: str,
     summary_bits = [selection_note]
     if compat_mode:
         summary_bits.append(
-            f"Producer runs in compatibility mode ({producer['compat']['config_key']}): events that "
-            f"{producer['compat']['name']} cannot represent are routed to {producer['hold_queue']}."
+            f"The sender runs in compatibility mode ({producer['compat']['config_key']}): events that "
+            f"{producer['compat']['name']} can't store are sent to {producer['hold_queue']} instead."
         )
     bad = [c["field"] for c in constraints if not c["compatible"]]
     if bad:

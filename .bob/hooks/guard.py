@@ -20,19 +20,21 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 BLOCKED = [
-    (r"\bkubectl\b.*\s(apply|delete|scale|rollout|patch|edit|replace|set|annotate|label|cordon|drain|create)\b", "kubectl mutation"),
-    (r"\boc\b.*\s(apply|delete|scale|rollout|patch|edit|replace|set|create)\b", "OpenShift mutation"),
-    (r"\bhelm\b.*\s(upgrade|install|uninstall|rollback)\b", "Helm release change"),
-    (r"\bargocd\b.*\s(sync|set|delete|rollback)\b", "Argo CD sync"),
-    (r"\bterraform\b.*\s(apply|destroy|import)\b", "Terraform change"),
-    (r"\baws\b.*\s(create|update|delete|deploy|put|modify|register|start|stop|terminate)[\w-]*", "AWS mutation"),
-    (r"\baz\b.*\s(create|update|delete|deploy|deployment|set|start|stop|restart)\b", "Azure mutation"),
-    (r"\bgcloud\b.*\s(create|update|delete|deploy|set|start|stop|resize)\b", "Google Cloud mutation"),
-    (r"\bflyway\b.*\s(migrate|clean|repair|undo)\b", "database migration"),
+    (r"\bkubectl\b.*[\s\"'(,](apply|delete|scale|rollout|patch|edit|replace|set|annotate|label|cordon|drain|create)\b", "kubectl mutation"),
+    (r"\boc\b.*[\s\"'(,](apply|delete|scale|rollout|patch|edit|replace|set|create)\b", "OpenShift mutation"),
+    (r"\bhelm\b.*[\s\"'(,](upgrade|install|uninstall|rollback)\b", "Helm release change"),
+    (r"\bargocd\b.*[\s\"'(,](sync|set|delete|rollback)\b", "Argo CD sync"),
+    (r"\bterraform\b.*[\s\"'(,](apply|destroy|import)\b", "Terraform change"),
+    (r"\baws\b.*[\s\"'(,](create|update|delete|deploy|put|modify|register|start|stop|terminate)[\w-]*", "AWS mutation"),
+    (r"\baz\b.*[\s\"'(,](create|update|delete|deploy|deployment|set|start|stop|restart)\b", "Azure mutation"),
+    (r"\bgcloud\b.*[\s\"'(,](create|update|delete|deploy|set|start|stop|resize)\b", "Google Cloud mutation"),
+    (r"\bflyway\b.*[\s\"'(,](migrate|clean|repair|undo)\b", "database migration"),
     (r"\bdb2\b.*\b(update|delete|insert|drop|alter)\b", "Db2 write"),
     (r"\b(runmqsc|setmqaut|endmqm|strmqm)\b", "IBM MQ administration"),
-    (r"\bgit\b.*\spush\b", "git push"),
+    (r"\bgit\b.*[\s\"'(,]push\b", "git push"),
 ]
+# The verb may follow a quote or comma, not only whitespace, so wrapped forms such as
+# Start-Process -FilePath "git" -ArgumentList "push" are caught as well.
 
 LOG = Path(__file__).resolve().parent.parent.parent / ".meridian" / "bob-activity.jsonl"
 

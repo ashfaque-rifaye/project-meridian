@@ -60,13 +60,13 @@ def promotion_pattern(environment: str, release_id: str | None = None) -> dict:
         e = d["event"]
         story.append(f"{e['component']} {e['to_version']} reached {environment.upper()} at {e['deployed_at']} "
                      f"via {e['tool']} ({e['trigger']}).")
-        story.append("The runbook puts it at step %d, after %s." % (d["runbook_step"], ", ".join(d["ahead_of"])))
+        story.append("The runbook says it should go at step %d, after %s." % (d["runbook_step"], ", ".join(d["ahead_of"])))
     for p in pending:
         story.append(f"{p['component']} {p['to_version']} is scheduled in {p['change_request']} "
                      f"for {p['window_start']} ({p['status']}).")
     if deviations:
-        story.append("Independent promotion cadences, not a single failed deployment, assembled a composition "
-                     "that no environment on the promotion path ever validated.")
+        story.append("No single deployment failed. Teams deploying on different schedules produced a set of versions "
+                     "that no earlier environment ever tested.")
 
     return {
         "environment": environment,

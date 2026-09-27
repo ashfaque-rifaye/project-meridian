@@ -24,7 +24,7 @@
         },
         "annotations": {
           "deployment.kubernetes.io/revision": "69",
-          "org.opencontainers.image.revision": "57bb624",
+          "org.opencontainers.image.revision": "b804772",
           "org.opencontainers.image.version": "3.1"
         }
       },
@@ -38,7 +38,7 @@
             "containers": [
               {
                 "name": "mq-bridge",
-                "image": "quay.dc2.acme.internal/integration/mq-bridge:3.1@sha256:6ae02d5d442d4975f625f7293f4362ff14bfa0367e70b1ace377d78065776b49",
+                "image": "quay.dc2.acme.internal/integration/mq-bridge:3.1@sha256:80741a308ba3de2be85725b2365c767e203dbcdc0827d7d0e765ba4af94dd6a7",
                 "resources": {
                   "requests": {
                     "cpu": "500m",

@@ -91,36 +91,36 @@ def relevance(reference: str = "stage", target: str = "prod", flow_id: str | Non
     for d in diffs:
         if d["component"] not in flow_components:
             d["classification"] = "irrelevant"
-            d["why"] = "Workload is not part of the selected business flow."
+            d["why"] = "Workload is not part of the selected flow."
         elif not _is_version_attr(d["attribute"]):
             d["classification"] = "relevant"
-            d["why"] = "Operational difference on a flow component; does not change an interface."
+            d["why"] = "Setting change on a service in the flow; it does not change how services talk to each other."
         elif any(d["component"] in (u["label"].split(" → ")) for u in unvalidated):
             d["classification"] = "release-convergence-risk"
-            d["why"] = "Version change that leaves a boundary without validation evidence."
+            d["why"] = "Version change that leaves a connection without a passing test."
         else:
             d["classification"] = "contract-affecting"
-            d["why"] = "Version change on a flow component; its boundaries still have validation evidence."
+            d["why"] = "Version change on a service in the flow; its connections still have passing tests."
 
     by_class: dict[str, int] = {}
     for d in diffs:
         by_class[d["classification"]] = by_class.get(d["classification"], 0) + 1
 
     funnel = [
-        {"stage": "raw", "label": "raw environment differences", "count": len(diffs),
-         "detail": f"attribute-level diff of every workload in {reference.upper()} vs {target.upper()}"},
-        {"stage": "flow", "label": "on the Order-to-Ledger flow", "count": len(on_flow),
-         "detail": f"{len(on_flow)} differences across {len({d['component'] for d in on_flow})} flow components"},
-        {"stage": "boundary", "label": "change a dependency boundary", "count": len(boundary),
-         "detail": f"version changes on {', '.join(version_changed) or 'no components'}"},
-        {"stage": "unvalidated", "label": "create an unvalidated version pair", "count": len(unvalidated),
+        {"stage": "raw", "label": "differences between environments", "count": len(diffs),
+         "detail": f"every setting of every workload, {reference.upper()} vs {target.upper()}"},
+        {"stage": "flow", "label": "in services that are part of this flow", "count": len(on_flow),
+         "detail": f"{len(on_flow)} differences across {len({d['component'] for d in on_flow})} services in the flow"},
+        {"stage": "boundary", "label": "are version changes", "count": len(boundary),
+         "detail": f"version changes on {', '.join(version_changed) or 'no services'}"},
+        {"stage": "unvalidated", "label": "leave a connection untested", "count": len(unvalidated),
          "detail": ", ".join(u["label"] + f" ({u['target_pair'][0]} → {u['target_pair'][1]})" for u in unvalidated) or "none"},
-        {"stage": "failed", "label": "fail executable validation", "count": len(failed),
-         "detail": ", ".join(f["label"] for f in failed) or ("probe not run yet" if unvalidated else "none")},
+        {"stage": "failed", "label": "fail the compatibility test", "count": len(failed),
+         "detail": ", ".join(f["label"] for f in failed) or ("test not run yet" if unvalidated else "none")},
     ]
     return {
         "reference": reference, "target": target, "flow_id": flow_id,
         "funnel": funnel, "by_classification": by_class,
         "boundary_changes": boundary, "differences": diffs,
-        "note": "Counts are computed from this demo's synthetic adapter data. They are not industry benchmarks.",
+        "note": f"Counts come from comparing {reference.upper()} with {target.upper()}.",
     }

@@ -13,7 +13,7 @@ export default function ReleaseJourney({ go }: { go: Go }) {
   const [envFilter, setEnvFilter] = useState<string>('all')
 
   if (error) return <div className="page"><ErrorBox error={error} /></div>
-  if (!data || !rel) return <div className="page"><Loading what="Replaying deployment history" /></div>
+  if (!data || !rel) return <div className="page"><Loading what="Loading deployment history" /></div>
 
   const pattern = rel.pattern
   const events = data.lanes.flatMap((l: any) => l.events).filter((e: any) => envFilter === 'all' || e.environment === envFilter)
@@ -22,22 +22,22 @@ export default function ReleaseJourney({ go }: { go: Go }) {
   return (
     <div className="page">
       <PageBanner video="timeline-tracks">
-        <PageHead eyebrow="Reconstruct · release journey" title={<>{rel.release.id} · how production <span className="grad-text">assembled itself</span></>}
-          sub="Every composition each environment ran, when it started, which deployment created it, and whether that exact combination had validation evidence."
-          actions={<button className="btn" onClick={() => go('/composition')}><Icon name="matrix" /> System composition</button>} />
+        <PageHead eyebrow="What’s running · deployment timeline" title={<>{rel.release.id} · how production <span className="grad-text">ended up with this mix</span></>}
+          sub="Every set of versions each environment ran, when it started, which deployment created it, and whether that exact set was tested."
+          actions={<button className="btn" onClick={() => go('/composition')}><Icon name="matrix" /> Versions by environment</button>} />
       </PageBanner>
 
-      <Card title="Promotion timeline · Mon 21 → Sun 27 Sep (UTC, synthetic)"
+      <Card title="Deployment timeline · Mon 21 → Sun 27 Sep (UTC)"
         right={<span className="row small muted" style={{ gap: 14 }}>
-          <span><span className="dot ok" /> validated composition</span><span><span className="dot warn" /> unvalidated composition</span>
-          <span><span className="dot fail" /> first divergence</span><span>◆ deployment</span><span>✓ semantic test run</span><span>↯ smoke only</span>
+          <span><span className="dot ok" /> tested versions</span><span><span className="dot warn" /> untested versions</span>
+          <span><span className="dot fail" /> failing connection</span><span>◆ deployment</span><span>✓ full test run</span><span>↯ smoke test only</span>
         </span>}>
         <Timeline data={data} onSegment={setSeg} selected={seg} />
         {seg ? (
           <div className="mt glass rise">
             <div className="row between">
               <div className="strong">{ENV_LABEL[seg.environment]} · {fmtTime(seg.start)} → {seg.end ? fmtTime(seg.end) : 'now'}</div>
-              <State s={seg.validated ? 'VERIFIED' : 'UNTESTED'} label={seg.validated ? 'COMPOSITION VALIDATED' : 'UNVALIDATED COMPOSITION'} />
+              <State s={seg.validated ? 'VERIFIED' : 'UNTESTED'} label={seg.validated ? 'VERSIONS TESTED' : 'VERSIONS NOT TESTED'} />
             </div>
             <div className="strip mt-s">
               {Object.entries(seg.versions).map(([c, v]: any) => {
@@ -46,16 +46,16 @@ export default function ReleaseJourney({ go }: { go: Go }) {
               })}
             </div>
             {seg.started_by && <div className="small muted mt-s">Created by {seg.started_by.component} {seg.started_by.from_version} → {seg.started_by.to_version} via {seg.started_by.tool} ({seg.started_by.trigger}){seg.started_by.note ? ` · ${seg.started_by.note}` : ''}</div>}
-            {!seg.validated && <div className="small c-warn mt-s">No passing validation evidence for: {seg.unvalidated.map((u: any) => `${u.edge_id} (${u.pair.join(' → ')})`).join(', ')}</div>}
+            {!seg.validated && <div className="small c-warn mt-s">No passing test for: {seg.unvalidated.map((u: any) => `${u.edge_id.replace('--', ' → ')} (${u.pair.join(' → ')})`).join(', ')}</div>}
           </div>
-        ) : <div className="small muted mt-s">Click a composition bar to see the exact versions it ran.</div>}
+        ) : <div className="small muted mt-s">Click a bar to see the exact versions that environment ran.</div>}
       </Card>
 
       <div className="grid g2 mt-l">
-        <Card title="Why this happened · runbook vs reality">
+        <Card title="Why this happened · planned order vs actual order">
           <div className="grid g2" style={{ gap: 12 }}>
             <div>
-              <div className="kicker">Release runbook order</div>
+              <div className="kicker">Planned order (runbook)</div>
               <ol className="mt-s" style={{ paddingLeft: 18, display: 'grid', gap: 4 }}>
                 {pattern.expected_order.map((s: any) => {
                   const pending = pattern.pending.some((p: any) => p.component === s.component)
@@ -88,7 +88,7 @@ export default function ReleaseJourney({ go }: { go: Go }) {
           {pattern.story.map((s: string, i: number) => <p key={i} className="small t2" style={{ marginBottom: 6 }}>{s}</p>)}
         </Card>
 
-        <Card title="Release intent · enterprise documents" right={<span className="small muted">read by Bob’s release investigator</span>}>
+        <Card title="Release plan · documents" right={<span className="small muted">read by IBM Bob</span>}>
           <div className="small t2">{rel.release.requirement}</div>
           <div className="row wrap mt-s">{rel.release.tickets.map((t: string) => <span key={t} className="tag">{t}</span>)}</div>
           <div className="mt" style={{ display: 'grid', gap: 10 }}>
@@ -105,7 +105,7 @@ export default function ReleaseJourney({ go }: { go: Go }) {
           </div>
           <div className="callout info mt small">
             <span>ℹ</span>
-            <div>CR-4471 states the dependency in plain words: <span className="quote">{rel.change_request?.dependency}</span> No pipeline enforces it.</div>
+            <div>Change request CR-4471 spells out the dependency: <span className="quote">{rel.change_request?.dependency}</span> No pipeline enforces it.</div>
           </div>
         </Card>
       </div>
@@ -120,7 +120,7 @@ export default function ReleaseJourney({ go }: { go: Go }) {
         </div>
         <div style={{ maxHeight: 360, overflow: 'auto' }}>
           <table className="tbl">
-            <thead><tr><th>When (UTC)</th><th>Env</th><th>Component</th><th>Change</th><th>Commit</th><th>Tool · trigger</th><th>Note</th></tr></thead>
+            <thead><tr><th>When (UTC)</th><th>Env</th><th>Service</th><th>Change</th><th>Commit</th><th>Tool · trigger</th><th>Note</th></tr></thead>
             <tbody>
               {events.map((e: any) => (
                 <tr key={e.event_id} className={e.environment === 'prod' && e.component === 'mq-bridge' ? 'hl' : ''}>

@@ -21,11 +21,20 @@ export const GLYPH: Record<string, string> = {
   NONE: '∅',
 }
 
+/** Plain-language names for engine states. The engine values themselves are unchanged. */
 export const LABEL: Record<string, string> = {
-  VERIFIED_BY_PROBE: 'VERIFIED BY PROBE',
-  OBSERVED_TOGETHER: 'OBSERVED TOGETHER',
-  NEEDS_HUMAN: 'NEEDS HUMAN',
-  NONE: 'NO EVIDENCE',
+  VERIFIED: 'TESTED',
+  VERIFIED_BY_PROBE: 'PASSED TEST',
+  UNTESTED: 'NOT TESTED',
+  UNVALIDATED: 'NOT TESTED',
+  EXERCISED: 'SMOKE TEST ONLY',
+  OBSERVED_TOGETHER: 'RAN SIDE BY SIDE',
+  FAILED: 'FAILED',
+  DIVERGED: 'FAILING',
+  CONVERGED: 'ALL TESTED',
+  SUPPORTED: 'CONFIRMED',
+  NEEDS_HUMAN: 'NEEDS REVIEW',
+  NONE: 'NO TEST RECORD',
 }
 
 export function State({ s, lg, label }: { s?: string | null; lg?: boolean; label?: string }) {
@@ -88,7 +97,7 @@ export function ErrorBox({ error }: { error: string }) {
       <div>
         <div className="strong">Request failed</div>
         <div className="err">{error}</div>
-        <div className="small muted mt-s">Is the API running? <code>uvicorn apps.api.main:app --port 8000</code> — and was the scenario seeded (<code>./demo/seed.sh</code>)?</div>
+        <div className="small muted mt-s">Is the API running? Start it with <code>uvicorn apps.api.main:app --port 8000</code>, then load the environment data with <code>./demo/seed.sh</code>.</div>
       </div>
     </div>
   )

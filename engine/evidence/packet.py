@@ -49,21 +49,21 @@ def build_packet(evaluation: dict, contract: dict | None = None) -> dict | None:
                       "source": "environments/deployment-events.json", "at": event["deployed_at"]})
     for v in evidence.exercised:
         items.append({"kind": "validation", "id": v["evidence_id"],
-                      "title": f"EXERCISED only: {v['suite']} in {v['environment'].upper()} "
-                               f"({v['messages']} message, {v['semantic_assertions']} semantic assertions)",
+                      "title": f"Smoke test only: {v['suite']} in {v['environment'].upper()} "
+                               f"({v['messages']} message, {v['semantic_assertions']} data checks)",
                       "source": "environments/validation-runs.json", "at": v["executed_at"]})
     for w in evidence.observed:
         items.append({"kind": "coexistence", "id": w["evidence_id"],
-                      "title": f"OBSERVED TOGETHER in {w['environment'].upper()} for {w['duration_seconds'] / 3600:.1f}h"
-                               + (" (current)" if w["ongoing"] else ""),
+                      "title": f"Ran side by side in {w['environment'].upper()} for {w['duration_seconds'] / 3600:.1f}h"
+                               + (" (still running)" if w["ongoing"] else ""),
                       "source": "environments/deployment-events.json", "at": w["start"]})
     if contract and contract.get("status") == "DISCOVERED":
         for c in contract["constraints"]:
             items.append({"kind": "source", "id": f"{contract['contract_id']}:{c['field']}",
-                          "title": f"{c['field']}: producer {c['producer']} · consumer {c['consumer']}",
+                          "title": f"{c['field']}: sender writes {c['producer']} · receiver reads {c['consumer']}",
                           "source": f"{c['producer_source']} ⇄ {c['consumer_source']}", "at": None})
         for sheet, rows in contract["documents"]["interface_control"].get("sheets", {}).items():
-            items.append({"kind": "document", "id": f"icd:{sheet}", "title": f"LEDG-ICD-007 · {sheet} ({len(rows)} fields)",
+            items.append({"kind": "document", "id": f"icd:{sheet}", "title": f"Interface spreadsheet · {sheet} ({len(rows)} fields)",
                           "source": rows[0]["source"].split("!")[0] if rows else "interface-control.xlsx", "at": None})
         cr = contract["documents"].get("change_request")
         if cr:
@@ -71,21 +71,21 @@ def build_packet(evaluation: dict, contract: dict | None = None) -> dict | None:
                           "source": cr["source"], "at": None})
     if probe:
         items.append({"kind": "probe", "id": probe["evidence_id"],
-                      "title": f"Probe {probe['result']}: {probe['assertions_failed']} of {probe['assertions_total']} "
-                               f"semantic assertions failed" + (" (silent)" if probe["silent_failure"] else ""),
+                      "title": f"Compatibility test {probe['result']}: {probe['assertions_failed']} of {probe['assertions_total']} "
+                               f"data checks failed" + (" (no error raised)" if probe["silent_failure"] else ""),
                       "source": f".meridian/runs/{probe['run_id']}.json", "at": probe["finished_at"]})
 
     since = fd.get("unvalidated_since")
     summary = (
-        f"{evaluation['environment'].upper()} entered a new unvalidated composition at {since} when "
-        f"{event.get('component', fd['producer'])} {event.get('to_version', fd['producer_version'])} was promoted "
-        f"while {fd['consumer']} remained at {fd['consumer_version']}. No passing validation evidence exists for "
-        f"{fd['producer']} {fd['producer_version']} → {fd['consumer']} {fd['consumer_version']} on the promotion path. "
+        f"Since {since}, {evaluation['environment'].upper()} has been running versions that were never tested together: "
+        f"{event.get('component', fd['producer'])} {event.get('to_version', fd['producer_version'])} was deployed "
+        f"while {fd['consumer']} stayed on {fd['consumer_version']}. No earlier environment has a passing test for "
+        f"{fd['producer']} {fd['producer_version']} → {fd['consumer']} {fd['consumer_version']}. "
     )
     if probe:
-        summary += (f"The isolated probe reproduced a {'silent ' if probe['silent_failure'] else ''}semantic "
-                    f"incompatibility: {probe['assertions_failed']} of {probe['assertions_total']} assertions failed "
-                    f"while every record was acknowledged and committed.")
+        summary += (f"The sandbox compatibility test failed{' without raising an error' if probe['silent_failure'] else ''}: "
+                    f"{probe['assertions_failed']} of {probe['assertions_total']} data checks failed, even though every "
+                    f"message was accepted and saved.")
 
     packet = {
         "packet_id": f"pkt-{fd['divergence_id']}",
@@ -126,24 +126,24 @@ def review(packet: dict) -> dict:
         checks.append({"id": cid, "label": label, "passed": bool(ok), "detail": detail})
 
     up, down = packet["upstream"], packet["downstream"]
-    check("observed-state", "Running versions come from adapter evidence",
+    check("observed-state", "Running versions were read from the environments",
           bool(up.get("artifact")) and bool(down.get("artifact")),
           f"{up['component']} from {up.get('artifact')}; {down['component']} from {down.get('artifact')}")
-    check("exact-commits", "Probe used the exact deployed commits",
+    check("exact-commits", "The test used the exact deployed code",
           bool(packet["probe"]) and packet["probe"]["run_id"] and up["commit"] and down["commit"],
-          f"producer {up['commit']}, consumer {down['commit']}")
+          f"sender {up['commit']}, receiver {down['commit']}")
     vh = packet["validation_history"]
-    check("no-verified-evidence", "No VERIFIED evidence exists for this exact pair",
-          not vh["verified"], f"strongest evidence tier: {vh['tier']}")
-    check("coexistence-not-validation", "Co-existence and exercised traffic are not counted as validation",
-          True, f"{len(vh['observed'])} co-existence window(s), {len(vh['exercised'])} exercised run(s) reported separately")
-    check("execution-decides", "FAILED is based on probe execution, not model judgement",
-          bool(packet["probe"]) and packet["probe"]["result"] == "FAIL", "deterministic assertion evaluation")
+    check("no-verified-evidence", "This exact version pair has never passed a full test",
+          not vh["verified"], f"best test record: {vh['tier']}")
+    check("coexistence-not-validation", "Running side by side and smoke tests are not counted as tested",
+          True, f"{len(vh['observed'])} side-by-side period(s), {len(vh['exercised'])} smoke test(s) listed separately")
+    check("execution-decides", "The failure comes from running the test, not from AI judgement",
+          bool(packet["probe"]) and packet["probe"]["result"] == "FAIL", "rule-based check of the saved data")
     text = json.dumps(packet).lower()
     bad = [p for p in FORBIDDEN_PHRASES if p in text]
-    check("no-causal-claim", "No unsupported causal claims", not bad,
+    check("no-causal-claim", "No claims beyond what the evidence shows", not bad,
           "none found" if not bad else "found: " + ", ".join(bad))
-    check("timestamp", "Divergence timestamp traced to a deployment event",
+    check("timestamp", "The start time is linked to a specific deployment",
           bool(packet["first_divergence_timestamp"]) and bool(packet["triggering_deployment"]),
           packet["triggering_deployment"]["event_id"] if packet["triggering_deployment"] else "missing")
 
