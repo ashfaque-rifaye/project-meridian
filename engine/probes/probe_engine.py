@@ -22,7 +22,7 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 from engine.domain.models import ProbeOutcome
-from engine.paths import PROBES, ROOT, RUNS, SANDBOX, ensure_dirs
+from engine.paths import PROBES, ROOT, RUNS, SANDBOX, SERVERLESS, ensure_dirs
 from engine.probes import workspace
 
 RUNNER = Path(__file__).with_name("runner.py")
@@ -239,21 +239,71 @@ def run_probe(spec: dict) -> dict:
     return result
 
 
-def all_runs() -> list[dict]:
-    if not RUNS.exists():
+def _seeded_run_records() -> list[dict]:
+    """Load committed probe summaries when serverless runtime storage is empty."""
+    source = ROOT / "probes"
+    if not source.exists():
         return []
-    runs = []
-    for path in RUNS.glob("run-*.json"):
+    seeded = []
+    for path in sorted(source.glob("probe-*.json")):
         try:
-            runs.append(json.loads(path.read_text(encoding="utf-8")))
-        except json.JSONDecodeError:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
             continue
-    return sorted(runs, key=lambda r: r["run_id"])
+        latest = payload.get("latest_run") or {}
+        spec = payload.get("spec") or {}
+        if not latest.get("run_id") or not spec.get("edge_id"):
+            continue
+        fixtures = spec.get("fixtures") or []
+        result = latest.get("result", ProbeOutcome.INCONCLUSIVE.value)
+        seeded.append({
+            "run_id": latest["run_id"],
+            "probe_id": payload.get("probe_id") or spec.get("probe_id"),
+            "evidence_id": latest.get("evidence_id"),
+            "edge_id": spec["edge_id"],
+            "interface": spec.get("interface"),
+            "producer": spec.get("producer") or {},
+            "consumer": spec.get("consumer") or {},
+            "result": result,
+            "silent_failure": bool(latest.get("silent_failure")),
+            "fixtures": [],
+            "assertions_total": len(fixtures) * 3,
+            "assertions_failed": len(fixtures) if result == ProbeOutcome.FAIL.value else 0,
+            "held": 0,
+            "exit_code": 0,
+            "stdout": "",
+            "stderr": "",
+            "started_at": latest.get("finished_at"),
+            "finished_at": latest.get("finished_at"),
+            "duration_ms": 0,
+            "sandbox": "",
+            "isolation": spec.get("isolation"),
+            "transcript": [],
+            "spec": spec,
+        })
+    return seeded
+
+
+def all_runs() -> list[dict]:
+    runs_by_id = {}
+    if RUNS.exists():
+        for path in RUNS.glob("run-*.json"):
+            try:
+                run = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            runs_by_id[run["run_id"]] = run
+    if SERVERLESS:
+        for run in _seeded_run_records():
+            runs_by_id.setdefault(run["run_id"], run)
+    return sorted(runs_by_id.values(), key=lambda r: r["run_id"])
 
 
 def get_run(run_id: str) -> dict | None:
     path = RUNS / f"{run_id}.json"
-    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return next((run for run in all_runs() if run["run_id"] == run_id), None)
 
 
 def latest_result(edge_id: str, producer_commit: str | None, consumer_commit: str | None,
