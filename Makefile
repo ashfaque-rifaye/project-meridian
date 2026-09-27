@@ -39,7 +39,7 @@ docs:
 # Full clean
 clean:
 	rm -rf apps/web/dist
-	rm -f .lockstep/runs/*.json
-	rm -f .lockstep/investigation.log
+	rm -f .meridian/runs/*.json
+	rm -f .meridian/investigation.log
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -name "*.pyc" -delete 2>/dev/null || true

@@ -437,7 +437,7 @@
   "human_summary": "PROD entered a new unvalidated composition at 2026-09-25T11:42:00Z when mq-bridge 3.1 was promoted while legacy-ledger remained at 6.9. No passing validation evidence exists for mq-bridge 3.1 \u2192 legacy-ledger 6.9 on the promotion path. The isolated probe reproduced a silent semantic incompatibility: 3 of 9 assertions failed while every record was acknowledged and committed.",
   "claim_type": "First Demonstrated Divergence (factual observation, not a causal claim)",
   "review": {
-    "reviewer": "lockstep-evidence-review (deterministic rules; IBM Bob evidence-reviewer skill mirrors them)",
+    "reviewer": "meridian-evidence-review (deterministic rules; IBM Bob evidence-reviewer skill mirrors them)",
     "verdict": "SUPPORTED",
     "checks": [
       {

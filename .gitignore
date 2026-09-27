@@ -28,8 +28,8 @@ apps/web/dist/
 .meridian/bob-activity.jsonl
 .meridian/benchmark.json
 
-# Old lockstep runtime dir
-.lockstep/
+# Legacy hidden runtime archives
+.lock*/
 
 # Claude/IDE internal
 .claude/
@@ -43,7 +43,6 @@ apps/web/dist/
 Thumbs.db
 *.tmp
 meridian_probe_*.py
-lockstep_probe_*.py
 *.tsbuildinfo
 vite.config.d.ts
 vite.config.js

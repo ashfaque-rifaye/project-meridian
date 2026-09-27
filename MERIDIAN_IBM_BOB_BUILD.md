@@ -1,4 +1,4 @@
-# LOCKSTEP — IBM BOB 2.0 MASTER BUILD SPEC
+# MERIDIAN — IBM BOB 2.0 MASTER BUILD SPEC
 
 > **Every component passed. The system didn't.**
 >
@@ -25,13 +25,13 @@ At the end of the build, a judge must be able to see, in one continuous flow:
 1. A release was validated successfully in Stage.
 2. Production later assembled a different combination of component versions.
 3. Every individual component can appear healthy while the overall combination is unvalidated.
-4. Lockstep reconstructs the actual release state across environments.
-5. Lockstep discovers an undocumented integration contract from code + enterprise documents.
+4. Meridian reconstructs the actual release state across environments.
+5. Meridian discovers an undocumented integration contract from code + enterprise documents.
 6. IBM Bob uses specialized parallel agents/subagents to investigate the evidence.
 7. Bob generates an executable compatibility probe.
 8. The probe executes in an isolated sandbox, never in Production.
 9. The probe demonstrates a semantic compatibility failure that ordinary infrastructure health checks would not necessarily catch.
-10. Lockstep identifies the **First Demonstrated Divergence** with evidence.
+10. Meridian identifies the **First Demonstrated Divergence** with evidence.
 11. A counterfactual promotion rehearsal detects the same incompatible composition before another deployment.
 12. Bob can draft an isolated remediation and rerun the probe.
 
@@ -51,7 +51,7 @@ Only stop for a genuinely blocking external dependency that cannot be simulated.
 
 ## Product
 
-**LOCKSTEP**
+**MERIDIAN**
 
 Working subtitle:
 
@@ -63,7 +63,7 @@ Tagline:
 
 Primary one-line description:
 
-> Lockstep reconstructs what is actually running across Dev, Test, Stage, and Prod, learns which component combinations have actually been validated, discovers undocumented compatibility boundaries, safely rehearses unvalidated combinations, and identifies the first demonstrated release divergence with evidence.
+> Meridian reconstructs what is actually running across Dev, Test, Stage, and Prod, learns which component combinations have actually been validated, discovers undocumented compatibility boundaries, safely rehearses unvalidated combinations, and identifies the first demonstrated release divergence with evidence.
 
 ### Core question
 
@@ -146,7 +146,7 @@ The core pain is:
 
 > **Engineering teams cannot quickly establish whether the exact distributed software composition running now is one that was ever validated together, especially at undocumented integration boundaries.**
 
-That is the problem Lockstep addresses.
+That is the problem Meridian addresses.
 
 ---
 
@@ -194,7 +194,7 @@ Do not claim that no one has ever conceived any part of this idea.
 
 The defensible novelty position is the **specific combination** of capabilities:
 
-> Lockstep reconstructs actual environment composition from promotion history, identifies exact version combinations that lack validation evidence, discovers implicit integration constraints from deployed code and enterprise documents, and resolves those untested boundaries through isolated executable probes rather than an LLM-generated compatibility opinion.
+> Meridian reconstructs actual environment composition from promotion history, identifies exact version combinations that lack validation evidence, discovers implicit integration constraints from deployed code and enterprise documents, and resolves those untested boundaries through isolated executable probes rather than an LLM-generated compatibility opinion.
 
 The solution must continuously reinforce that distinction.
 
@@ -210,7 +210,7 @@ IBM Bob hackathon submissions may also cover broad release readiness, migration/
 
 Therefore:
 
-**Do not describe Lockstep as “AI release safety.”**
+**Do not describe Meridian as “AI release safety.”**
 
 Describe it as:
 
@@ -229,7 +229,7 @@ Reference material:
 
 # 5. THE SIGNATURE CONCEPTS
 
-Lockstep has five product concepts.
+Meridian has five product concepts.
 
 ## 5.1 Release Intent
 
@@ -639,7 +639,7 @@ Begin with the enterprise condition:
 
 Then prove it.
 
-The audience should discover the semantic mismatch through Lockstep.
+The audience should discover the semantic mismatch through Meridian.
 
 ---
 
@@ -742,7 +742,7 @@ Allow the user to select something like:
 Promote mq-bridge 3.1 → PROD
 ```
 
-Lockstep must NOT deploy anything.
+Meridian must NOT deploy anything.
 
 Instead:
 
@@ -1237,7 +1237,7 @@ The goal is to prove the normalized model, not to provision real infrastructure.
 
 # 25. SECURITY / SAFETY
 
-Lockstep is **read-only against target environments**.
+Meridian is **read-only against target environments**.
 
 Create a dedicated Bob custom mode that is restricted to investigation and analysis.
 
@@ -1294,7 +1294,7 @@ https://bob.ibm.com/docs/ide/configuration/lifecycle-hooks
 Create this structure:
 
 ```text
-lockstep/
+meridian/
 │
 ├── AGENTS.md
 ├── README.md
@@ -1337,7 +1337,7 @@ lockstep/
 │   │   ├── contract-discovery.md
 │   │   └── evidence-reviewer.md
 │   │
-│   └── rules-lockstep/
+│   └── rules-meridian/
 │       ├── 01-safety.md
 │       ├── 02-evidence.md
 │       └── 03-product-boundary.md
@@ -1440,7 +1440,7 @@ Use project-level `.bob/custom_modes.yaml`.
 
 Create at least these modes.
 
-## `lockstep-investigator`
+## `meridian-investigator`
 
 Purpose:
 
@@ -1458,7 +1458,7 @@ Capabilities:
 
 No unrestricted editing.
 
-## `lockstep-probe-engineer`
+## `meridian-probe-engineer`
 
 Purpose:
 
@@ -1473,7 +1473,7 @@ Capabilities:
 - skill
 - subagent
 
-## `lockstep-remediator`
+## `meridian-remediator`
 
 Purpose:
 
@@ -1490,7 +1490,7 @@ Capabilities:
 
 Must never deploy.
 
-## `lockstep-demo`
+## `meridian-demo`
 
 Purpose:
 
@@ -1595,7 +1595,7 @@ Instructions:
 
 Description:
 
-> Audit Lockstep findings for evidence completeness, contradictions, uncertainty, and unsupported causal claims.
+> Audit Meridian findings for evidence completeness, contradictions, uncertainty, and unsupported causal claims.
 
 Instructions:
 
@@ -1613,7 +1613,7 @@ Store reusable prompts in `.bob/agents/`.
 ## Release Investigator prompt
 
 ```text
-You are the Lockstep Release Investigator.
+You are the Meridian Release Investigator.
 
 Your objective is to reconstruct the selected release from repository and release evidence.
 
@@ -1634,7 +1634,7 @@ Return structured JSON plus concise human-readable findings.
 ## Environment Investigator prompt
 
 ```text
-You are the Lockstep Environment Investigator.
+You are the Meridian Environment Investigator.
 
 For the assigned environment, reconstruct the actual running composition of the selected business flow.
 
@@ -1656,7 +1656,7 @@ Return structured JSON.
 ## Contract Discovery prompt
 
 ```text
-You are the Lockstep Implicit Contract Discovery Agent.
+You are the Meridian Implicit Contract Discovery Agent.
 
 You are given one producer/consumer edge and the exact deployed commits.
 
@@ -1689,7 +1689,7 @@ You only discover the contract and propose the probe.
 ## Evidence Reviewer prompt
 
 ```text
-You are the Lockstep Evidence Reviewer.
+You are the Meridian Evidence Reviewer.
 
 Audit the proposed finding.
 
@@ -1895,7 +1895,7 @@ Show actual probe execution.
 Example:
 
 ```text
-$ lockstep probe run probe-001
+$ meridian probe run probe-001
 
 Producer commit: 8f7a91
 Consumer commit: a18c92
@@ -2025,7 +2025,7 @@ This demonstrates the actual enterprise pain rather than blaming one developer.
 
 ---
 
-# 36. NAIVE DIFF VS LOCKSTEP
+# 36. NAIVE DIFF VS MERIDIAN
 
 Create a comparison view.
 
@@ -2035,7 +2035,7 @@ Naive diff:
 37 environment differences
 ```
 
-Lockstep:
+Meridian:
 
 ```text
 37 differences
@@ -2076,7 +2076,7 @@ Team conversations
 After:
 
 ```text
-Lockstep
+Meridian
   ↓
 parallel evidence gathering
   ↓
@@ -2100,7 +2100,7 @@ Create `demo/benchmark.sh`.
 Collect:
 
 - manual reconstruction time using the scripted baseline
-- Lockstep run time
+- Meridian run time
 - number of evidence sources manually inspected
 - number of manual cross-team checks
 - number of relevant environment differences
@@ -2530,7 +2530,7 @@ DIVERGED
 
 Everything appears healthy.
 
-## Scene 3 — Ask Lockstep
+## Scene 3 — Ask Meridian
 
 Question:
 
@@ -2635,7 +2635,7 @@ Green infrastructure + wrong business data.
 
 ## WOW 4 — Counterfactual Promotion
 
-The user selects a promotion and Lockstep safely demonstrates that it would create an unvalidated combination before deployment.
+The user selects a promotion and Meridian safely demonstrates that it would create an unvalidated combination before deployment.
 
 ---
 
@@ -2823,7 +2823,7 @@ The implementation is accepted only if all are true.
 
 ### Product
 
-- [ ] Product name LOCKSTEP appears consistently.
+- [ ] Product name MERIDIAN appears consistently.
 - [ ] Tagline appears in primary presentation surfaces.
 - [ ] Core workflow is clear within 20 seconds.
 
@@ -2876,7 +2876,7 @@ The public README should open with:
 
 > **Every component passed. The system didn't.**
 >
-> Lockstep is an AI-assisted release-convergence system for distributed enterprise applications. It reconstructs the exact software composition running across environments, distinguishes observed coexistence from actual validation evidence, discovers implicit integration contracts, safely rehearses unvalidated version combinations, and identifies the first demonstrated release divergence.
+> Meridian is an AI-assisted release-convergence system for distributed enterprise applications. It reconstructs the exact software composition running across environments, distinguishes observed coexistence from actual validation evidence, discovers implicit integration contracts, safely rehearses unvalidated version combinations, and identifies the first demonstrated release divergence.
 
 Then show one architecture diagram and one screenshot of the First Divergence view.
 
@@ -2916,7 +2916,7 @@ flowchart TD
     PE --> EV[Evidence Packet]
     VR --> EV
     ENG --> FD[First Demonstrated Divergence]
-    FD --> UI[Lockstep UI]
+    FD --> UI[Meridian UI]
     EV --> UI
 ```
 
@@ -2940,7 +2940,7 @@ Use these phrases in the UI where appropriate.
 
 ### Contract discovery
 
-> **No formal contract found. Lockstep reconstructed the interface from code and documents.**
+> **No formal contract found. Meridian reconstructed the interface from code and documents.**
 
 ### Probe
 
@@ -3002,7 +3002,7 @@ Event schema evolution.
 
 ## D. Bob Shell mode
 
-Run Lockstep headlessly in CI.
+Run Meridian headlessly in CI.
 
 ## E. watsonx integration
 
@@ -3054,13 +3054,13 @@ The complete narrative should be:
 >
 > Every component can pass its own tests, every deployment can be green, and every health check can be healthy while the resulting Production composition was never validated.
 >
-> Lockstep reconstructs that composition.
+> Meridian reconstructs that composition.
 >
 > It remembers what combinations were actually exercised.
 >
 > When it finds an unvalidated boundary, IBM Bob reads the deployed code and enterprise documentation to discover the implicit contract.
 >
-> Lockstep then executes the missing compatibility check in an isolated sandbox.
+> Meridian then executes the missing compatibility check in an isolated sandbox.
 >
 > It proves the failure rather than guessing.
 >
@@ -3084,7 +3084,7 @@ After reading this specification:
 2. Create `AGENTS.md`.
 3. Create `.bob/custom_modes.yaml`.
 4. Create `.bob/settings.json` and safety hooks.
-5. Create all Lockstep skills.
+5. Create all Meridian skills.
 6. Create the reusable Bob agent prompt library.
 7. Create `.bob/mcp.json` and implement the MCP server.
 8. Build the sample enterprise system and its Git history.
